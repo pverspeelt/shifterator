@@ -41,20 +41,21 @@ shift <- function(type2freq_1,
   
   
   # Set reference value
-  lex_ref <- NULL
+  # lex_ref is used in the python version, but is this needed? 
+  # If user supplies reference_value with instructions on how to use the dictionary
+  # the reference value should be correct for the corresponding dictionary.
+  # otherwise use the mean value of the dictionary?
   if(!is.null(reference_value)) {
-    if(reference_value == "average") {
-      # create get_weighted_score function
-      reference_value <- "average"
-      # reference_value <- get_weighted_score(self.type2freq_1, self.type2score_1) 
+    if(is.numeric(reference_value)){
+      reference_value = reference_value
     } else 
-      reference_value <- reference_value
-  } else 
-    if(!is.null(lex_ref)) {
-      reference_value <- lex_ref
-    } else 
-      reference_value <- 0
-    
+      if(reference_value == "average") {
+        reference_value <- get_weighted_score(type2freq_1, type2score_1) 
+      } else 
+    reference_value <- 0
+  }
+  
+
 
   
   
@@ -70,5 +71,24 @@ shift <- function(type2freq_1,
                    class = "shift"
                    )
   out
+  
+}
+
+
+
+get_weighted_score <- function(type2freq_1, type2score_1){
+  
+  types <- intersect(type2freq_1$word, type2score_1$word)
+  
+  # Check we have a vocabulary to work with otherwise return 0
+  if(length(types) == 0) {
+    return(0)
+  }
+  
+  # Get weighted score and total frequency
+  total_freq <- sum(type2freq_1$freq[type2freq_1$word %in% types])
+  total_score = sum(type2score_1$value[type2score_1$word %in% types])
+    
+  weighted_score = total_score / total_freq
   
 }
