@@ -7,41 +7,58 @@ shift <- function(type2freq_1,
                   stop_lens = NULL,
                   stop_words = NULL,
                   normalization = "variation"){ 
+
+  ## Check names om type2freq and set them to word and freq
+  ## check handle_missing_scores on valid entries
   
-  # Set type2score dictionaries
+  
+  ## Set type2score dictionaries and set the column names to word and score
+  # get_score_dictionary not needed if a dictionary is supplied. 
+  # dictionary should be gotten via textdata or a download.
   if(!is.null(type2score_1) & !is.null(type2score_2)) {
-    print("type2score_1 and type2score_2 are not NULL")
-    # self.type2score_1, lex_ref = helper.get_score_dictionary(type2score_1)
-    # self.type2score_2, _ = helper.get_score_dictionary(type2score_2)
-    # _ in python means don't care about the returned value. (Aka dump it)
-    # lex_ref is only relevant for which dictionary is used. 
-    if(type2score_1 != type2score_2) {
+    type2score_1 <- setNames(type2score_1, c("word", "score"))
+    type2score_2 <- setNames(type2score_2, c("word", "score"))
+    if(!identical(type2score_1, type2score_2)) {
       show_score_diffs <- TRUE 
       } else {
-      show_score_diffs <- FALSE 
+        show_score_diffs <- FALSE 
       }
   } else if(!is.null(type2score_1) & is.null(type2score_2)) {
-      # self.type2score_1, lex_ref = helper.get_score_dictionary(type2score_1)
-      # self.type2score_2 = self.type2score_1
+      type2score_1 <- setNames(type2score_1, c("word", "score"))
+      type2score_2 <- type2score_1
       show_score_diffs <- FALSE
   } else if(is.null(type2score_1) & !is.null(type2score_2)) {
-      # self.type2score_2, lex_ref = helper.get_score_dictionary(type2score_2)
-      # self.type2score_1 = self.type2score_2
+      type2score_2 <- setNames(type2score_2, c("word", "score"))
+      type2score_1 <- type2score_2
       show_score_diffs <- FALSE
   } else {
-      # self.type2score_1 = {t: 1 for t in type2freq_1}
-      # self.type2score_2 = {t: 1 for t in type2freq_2}
+      type2score_1 <- data.frame(type2freq_1$word, score = 1)
+      type2score_2 <- data.frame(type2freq_2$word, score = 1)
       show_score_diffs = FALSE
   }
   
-  # Preprocess words according to score rules, stop words, and stop lens
+  ## Preprocess words according to score rules, stop words, and stop lens
+  handle_missing_scores <- handle_missing_scores
+  
+  # set stop_lens
+  if(is.null(stop_lens)) {
+     stop_lens <- ""
+  } else {
+    stop_lens <- stop_lens
+  }
+  
+  # set stopwords
+  if(is.null(stop_words)) {
+    stop_words = data.frame()
+  } else {
+    stop_words <- stop_words
+  }
+    
+  # preprocess word scores
   
   
   
-  
-  
-  # Set reference value
-  # lex_ref is used in the python version, but is this needed? 
+  ## Set reference value
   # If user supplies reference_value with instructions on how to use the dictionary
   # the reference value should be correct for the corresponding dictionary.
   # otherwise use the mean value of the dictionary?
@@ -66,7 +83,10 @@ shift <- function(type2freq_1,
   # get_shift_scores(details=False)
   
   
-  out <- structure(list(reference_value = reference_value,
+  out <- structure(list(type2score_1 = type2score_1,
+                        type2score_2 = type2score_2,
+                        reference_value = reference_value,
+                        show_score_diffs = show_score_diffs,
                         normalization = normalization),
                    class = "shift"
                    )
