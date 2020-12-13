@@ -49,13 +49,28 @@ shift <- function(type2freq_1,
   
   # set stopwords
   if(is.null(stop_words)) {
-    stop_words = data.frame()
+    stop_words = ""
   } else {
     stop_words <- stop_words
   }
     
   # preprocess word scores
+  preprocessed <- preprocess_words_scores(type2freq_1 = type2freq_1, 
+                                          type2score_1 = type2score_1, 
+                                          type2freq_2 = type2freq_2, 
+                                          type2score_2 = type2score_2,
+                                          stop_lens = stop_lens, 
+                                          stop_words = stop_words, 
+                                          handle_missing_scores = handle_missing_scores)
   
+  type2freq_1 = preprocessed$type2freq_1_new
+  type2freq_2 = preprocessed$type2freq_2_new
+  type2score_1 = preprocessed$type2score_1_new
+  type2score_2 = preprocessed$type2score_2_new
+  types = preprocessed$final_types
+  filtered_types = preprocessed$filtered_types
+  no_score_types = preprocessed$no_score_types
+  adopted_score_types = preprocessed$adopted_score_types
   
   
   ## Set reference value
@@ -79,15 +94,32 @@ shift <- function(type2freq_1,
   
   # Get shift scores
   normalization = normalization
-  # create get_shift_scores function
+  
   # get_shift_scores(details=False)
+  shift_scores <- get_shift_scores(type2freq_1 = type2freq_1,
+                                   type2freq_2 = type2freq_2,
+                                   type2score_1 = type2score_1,
+                                   type2score_2 = type2score_2,
+                                   types = types,
+                                   reference_value = reference_value,
+                                   normalization = normalization)
   
   
-  out <- structure(list(type2score_1 = type2score_1,
+  
+  
+  out <- structure(list(type2freq_1 = type2freq_1,
+                        type2freq_2 = type2freq_2,
+                        type2score_1 = type2score_1,
                         type2score_2 = type2score_2,
+                        types = types,
+                        filtered_types = filtered_types,
+                        no_score_types = no_score_types,
+                        adopted_score_types = adopted_score_types,
                         reference_value = reference_value,
+                        normalization = normalization,
                         show_score_diffs = show_score_diffs,
-                        normalization = normalization),
+                        normalization = normalization,
+                        shift_scores = shift_scores),
                    class = "shift"
                    )
   out

@@ -128,10 +128,19 @@ preprocess_words_scores <- function(type2freq_1,
   
   # Update types to only be those that made it through all filters
   final_types <- setdiff(setdiff(ts, filtered_types), no_score_types)
-  type2freq_1_new <- data.frame(word = names(type2freq_1_new), score = Reduce(c, type2freq_1_new))
-  type2freq_2_new <- data.frame(word = names(type2freq_2_new), score = Reduce(c, type2freq_2_new))
-  type2score_1_new <- data.frame(word = names(type2score_1_new), score = Reduce(c, type2score_1_new))
-  type2score_2_new <- data.frame(word = names(type2score_2_new), score = Reduce(c, type2score_2_new))
+  type2freq_1_new <- data.frame(word = names(type2freq_1_new), 
+                                freq = Reduce(c, type2freq_1_new),
+                                stringsAsFactors = FALSE)
+  type2freq_2_new <- data.frame(word = names(type2freq_2_new), 
+                                freq = Reduce(c, type2freq_2_new),
+                                stringsAsFactors = FALSE)
+  type2score_1_new <- data.frame(word = names(type2score_1_new), 
+                                 score = Reduce(c, type2score_1_new),
+                                 stringsAsFactors = FALSE)
+  type2score_2_new <- data.frame(word = names(type2score_2_new), 
+                                 score = Reduce(c, type2score_2_new),
+                                 stringsAsFactors = FALSE)
+
   # return filtered word frequencies and scores. 
   out <- list(type2freq_1_new = type2freq_1_new,
               type2freq_2_new = type2freq_2_new,

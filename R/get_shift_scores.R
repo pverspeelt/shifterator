@@ -4,8 +4,7 @@ get_shift_scores <- function(type2freq_1,
                              type2score_2,
                              types,
                              reference_value,
-                             normalization, 
-                             details = FALSE) {
+                             normalization) {
   
         # Calculates the type shift scores between the two systems
         # Parameters
