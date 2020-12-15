@@ -1,3 +1,38 @@
+#' Shift
+#' 
+#' Shift object for calculating weighted scores of two systems of types, and the shift between them
+#'
+#' @param type2freq_1 A data.frame containing words and their frequencies.
+#' @param type2freq_2 A data.frame containing words and their frequencies.
+#' @param type2score_1 Optional. A lexicon containing 2 columns. The first column the words and the second column the word score.
+#' @param type2score_2 Optional. A lexicon containing 2 columns. The first column the words and the second column the word score.
+#' @param reference_value Optional. String or numeric. The reference score to use 
+#' to partition scores into two different regimes. If 'average', uses the average 
+#' score according to type2freq_1 and type2score_1. If None and a lexicon is 
+#' selected for type2score, uses the respective middle point in that lexicon's scale. 
+#' Otherwise if NULL, uses zero as the reference point.
+#' @param handle_missing_scores Optional. Default value: "error". If "error", throws an error 
+#' whenever a word has a score in one score dictionary but not the other. If "exclude", 
+#' excludes any word that is missing a score in one score dictionary from all word shift
+#' calculations, regardless if it may have a score in the other dictionary. If "adopt" 
+#' and the score is missing in one dictionary, then uses the score from the other 
+#' dictionary if it is available
+#' @param stop_lens Optional. Iterable of 2-tuples. Denotes intervals of scores 
+#' that should be excluded from word shifts calculations. Types with scores in 
+#' this range will be excluded from word shift calculations. See details for 
+#' more information.
+#' @param stop_words Optional. A string that contains words that should be excluded 
+#' from word shifts calculations.
+#' @param normalization Optional. Default value: "variation". If 'variation', normalizes
+#'  shift scores so that the sum of their absolute values sums to 1. If 'trajectory', 
+#'  normalizes them so that the sum of shift scores is 1 or -1. The trajectory 
+#'  normalization cannot be applied if the total shift score is 0, so scores are 
+#'  left unnormalized if the total is 0 and 'trajectory' is specified.
+#'
+#' @return Returns a list object of class shift.
+#' @keywords internal
+#'
+#' 
 shift <- function(type2freq_1,
                   type2freq_2,
                   type2score_1 = NULL,
