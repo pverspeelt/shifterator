@@ -81,7 +81,8 @@ preprocess_words_scores <- function(type2freq_1,
           score_2 <- type2score_1$score[type2score_1$word == word_to_process]
           adopted_score_types <- c(adopted_score_types, word_to_process)
         } else if(handle_missing_scores == "error"){
-          stop(glue("Word has freq but no score in type2score_2: {word_to_process}"))
+          stop(glue("Word has freq but no score in type2score_2: {word_to_process}"), 
+               call. = FALSE)
         } else if(handle_missing_scores == "exclude"){
           no_score_types <- c(no_score_types, word_to_process)
           next

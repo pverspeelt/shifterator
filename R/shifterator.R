@@ -67,17 +67,19 @@ shift <- function(type2freq_1,
       type2score_1 <- type2score_2
       show_score_diffs <- FALSE
   } else {
-      type2score_1 <- data.frame(type2freq_1$word, score = 1)
-      type2score_2 <- data.frame(type2freq_2$word, score = 1)
+      type2score_1 <- data.frame(word = type2freq_1$word, score = 1)
+      type2score_2 <- data.frame(word = type2freq_2$word, score = 1)
       show_score_diffs = FALSE
   }
   
   ## Preprocess words according to score rules, stop words, and stop lens
   handle_missing_scores <- handle_missing_scores
   
+  # test stop lens if it is not null. It should be a numeric vector of length 2 
+  # with the first value lower thatn the second value
   # set stop_lens
   if(is.null(stop_lens)) {
-     stop_lens <- ""
+     stop_lens <- NULL
   } else {
     stop_lens <- stop_lens
   }
@@ -115,10 +117,10 @@ shift <- function(type2freq_1,
   if(!is.null(reference_value)) {
     if(is.numeric(reference_value)){
       reference_value = reference_value
-    } else 
-      if(reference_value == "average") {
-        reference_value <- get_weighted_score(type2freq_1, type2score_1) 
-      } else 
+    } else if(reference_value == "average") {
+      reference_value <- get_weighted_score(type2freq_1, type2score_1)
+    } 
+  } else {
     reference_value <- 0
   }
   
