@@ -52,9 +52,9 @@ proportion_shift <- function(type2freq_1,
   
   for(word_to_process in types){
     if(sum(type2freq_1$word == word_to_process) == 0){
-      type2freq_1 <- rbind(type2freq_1, list(word = word_to_process, freq = 0))
+      type2freq_1 <- rbind(type2freq_1, list(word = word_to_process, freq_1 = 0))
     } else if(sum(type2freq_2$word == word_to_process) == 0){
-      type2freq_2 <- rbind(type2freq_2, list(word = word_to_process, freq = 0))
+      type2freq_2 <- rbind(type2freq_2, list(word = word_to_process, freq_2 = 0))
     }
   }
 

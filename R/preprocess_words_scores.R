@@ -48,12 +48,12 @@ preprocess_words_scores <- function(type2freq_1,
     } 
     # Handle words with missing scores before excluding based on stop lens
     if(sum(type2score_1$word == word_to_process) == 1){
-      score_1 <- type2score_1$score[type2score_1$word == word_to_process]
+      score_1 <- type2score_1$score_1[type2score_1$word == word_to_process]
     } else {
       score_1 <- NA_real_
     }
     if(sum(type2score_2$word == word_to_process) == 1){
-      score_2 <- type2score_2$score[type2score_2$word == word_to_process]
+      score_2 <- type2score_2$score_2[type2score_2$word == word_to_process]
     } else {
       score_2 <- NA_real_
     }
@@ -64,8 +64,8 @@ preprocess_words_scores <- function(type2freq_1,
     } else if(sum(type2score_1$word == word_to_process) == 0 & sum(type2score_2$word == word_to_process) == 1){
       # Word has score in dict2 but not dict1
         if(handle_missing_scores == "adopt"){
-          score_1 <- type2score_2$score[type2score_2$word == word_to_process]
-          score_2 <- type2score_2$score[type2score_2$word == word_to_process]
+          score_1 <- type2score_2$score_1[type2score_2$word == word_to_process]
+          score_2 <- type2score_2$score_2[type2score_2$word == word_to_process]
           adopted_score_types <- c(adopted_score_types, word_to_process)
         } else if(handle_missing_scores == "error"){
             stop(glue("Word has freq but no score in type2score_1: {word_to_process}"))
@@ -77,8 +77,8 @@ preprocess_words_scores <- function(type2freq_1,
     } else if(sum(type2score_1$word == word_to_process) == 1 & sum(type2score_2$word == word_to_process) == 0){
     # Word has score in dict1 but not dict2
         if(handle_missing_scores == "adopt"){
-          score_1 <- type2score_1$score[type2score_1$word == word_to_process]
-          score_2 <- type2score_1$score[type2score_1$word == word_to_process]
+          score_1 <- type2score_1$score_1[type2score_1$word == word_to_process]
+          score_2 <- type2score_1$score_2[type2score_1$word == word_to_process]
           adopted_score_types <- c(adopted_score_types, word_to_process)
         } else if(handle_missing_scores == "error"){
           stop(glue("Word has freq but no score in type2score_2: {word_to_process}"), 
@@ -88,8 +88,8 @@ preprocess_words_scores <- function(type2freq_1,
           next
         }
     } else {
-        score_1 <- type2score_1$score[type2score_1$word == word_to_process]
-        score_2 <- type2score_2$score[type2score_2$word == word_to_process]
+        score_1 <- type2score_1$score_1[type2score_1$word == word_to_process]
+        score_2 <- type2score_2$score_2[type2score_2$word == word_to_process]
     }
     
     # Exclude words based on stop lens
@@ -113,14 +113,14 @@ preprocess_words_scores <- function(type2freq_1,
     # Set words and freqs for words that pass all checks
     type2score_1_new[word_to_process] <- score_1
     if(sum(type2freq_1$word == word_to_process) == 1){
-      type2freq_1_new[word_to_process] <- type2freq_1$freq[type2freq_1$word == word_to_process]
+      type2freq_1_new[word_to_process] <- type2freq_1$freq_1[type2freq_1$word == word_to_process]
     } else {
       type2freq_1_new[word_to_process] = 0
     }
     
     type2score_2_new[word_to_process] = score_2
     if(sum(type2freq_2$word == word_to_process) == 1){
-      type2freq_2_new[word_to_process] <- type2freq_2$freq[type2freq_2$word == word_to_process]
+      type2freq_2_new[word_to_process] <- type2freq_2$freq_2[type2freq_2$word == word_to_process]
     } else {
       type2freq_2_new[word_to_process] = 0
     }
@@ -130,16 +130,16 @@ preprocess_words_scores <- function(type2freq_1,
   # Update types to only be those that made it through all filters
   final_types <- setdiff(setdiff(ts, filtered_types), no_score_types)
   type2freq_1_new <- data.frame(word = names(type2freq_1_new), 
-                                freq = Reduce(c, type2freq_1_new),
+                                freq_1 = Reduce(c, type2freq_1_new),
                                 stringsAsFactors = FALSE)
   type2freq_2_new <- data.frame(word = names(type2freq_2_new), 
-                                freq = Reduce(c, type2freq_2_new),
+                                freq_2 = Reduce(c, type2freq_2_new),
                                 stringsAsFactors = FALSE)
   type2score_1_new <- data.frame(word = names(type2score_1_new), 
-                                 score = Reduce(c, type2score_1_new),
+                                 score_1 = Reduce(c, type2score_1_new),
                                  stringsAsFactors = FALSE)
   type2score_2_new <- data.frame(word = names(type2score_2_new), 
-                                 score = Reduce(c, type2score_2_new),
+                                 score_2 = Reduce(c, type2score_2_new),
                                  stringsAsFactors = FALSE)
 
   # return filtered word frequencies and scores. 

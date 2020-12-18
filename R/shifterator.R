@@ -43,7 +43,7 @@ shift <- function(type2freq_1,
                   stop_words = NULL,
                   normalization = "variation"){ 
 
-  ## Check names om type2freq and set them to word and freq
+  ## Check names on type2freq and set them to word and freq
   ## check handle_missing_scores on valid entries
   
   
@@ -51,24 +51,24 @@ shift <- function(type2freq_1,
   # get_score_dictionary not needed if a dictionary is supplied. 
   # dictionary should be gotten via textdata or a download.
   if(!is.null(type2score_1) & !is.null(type2score_2)) {
-    type2score_1 <- setNames(type2score_1, c("word", "score"))
-    type2score_2 <- setNames(type2score_2, c("word", "score"))
+    type2score_1 <- setNames(type2score_1, c("word", "score_1"))
+    type2score_2 <- setNames(type2score_2, c("word", "score_2"))
     if(!identical(type2score_1, type2score_2)) {
       show_score_diffs <- TRUE 
       } else {
         show_score_diffs <- FALSE 
       }
   } else if(!is.null(type2score_1) & is.null(type2score_2)) {
-      type2score_1 <- setNames(type2score_1, c("word", "score"))
-      type2score_2 <- type2score_1
+      names(type2score_1) <- c("word", "score_1")
+      type2score_2 <- setNames(type2score_1, c("word", "score_1"))
       show_score_diffs <- FALSE
   } else if(is.null(type2score_1) & !is.null(type2score_2)) {
-      type2score_2 <- setNames(type2score_2, c("word", "score"))
-      type2score_1 <- type2score_2
+      names(type2score_2) <- c("word", "score_2")
+      type2score_1 <- setNames(type2score_2, c("word", "score_1"))
       show_score_diffs <- FALSE
   } else {
-      type2score_1 <- data.frame(word = type2freq_1$word, score = 1)
-      type2score_2 <- data.frame(word = type2freq_2$word, score = 1)
+      type2score_1 <- data.frame(word = type2freq_1$word, score_1 = 1)
+      type2score_2 <- data.frame(word = type2freq_2$word, score_2 = 1)
       show_score_diffs = FALSE
   }
   
