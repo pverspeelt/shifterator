@@ -112,7 +112,7 @@ preprocess_words_scores <- function(type2freq_1,
         (stop_lens[1] <= all_system_scores$score_1 & all_system_scores$score_1 <= stop_lens[2]) &
           (stop_lens[1] <= all_system_scores$score_2 & all_system_scores$score_2 <= stop_lens[2])]
       
-      all_system_scores <- all_system_scores[!all_system_scores$word %in% words_in_lens, ]
+      all_system_scores <- all_system_scores[!all_system_scores$word %in% words_in_stop_lens, ]
     }
   }
   

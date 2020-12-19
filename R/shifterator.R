@@ -51,8 +51,8 @@ shift <- function(type2freq_1,
   # get_score_dictionary not needed if a dictionary is supplied. 
   # dictionary should be gotten via textdata or a download.
   if(!is.null(type2score_1) & !is.null(type2score_2)) {
-    type2score_1 <- setNames(type2score_1, c("word", "score_1"))
-    type2score_2 <- setNames(type2score_2, c("word", "score_2"))
+    type2score_1 <- stats::setNames(type2score_1, c("word", "score_1"))
+    type2score_2 <- stats::setNames(type2score_2, c("word", "score_2"))
     if(!identical(type2score_1, type2score_2)) {
       show_score_diffs <- TRUE 
       } else {
@@ -60,11 +60,11 @@ shift <- function(type2freq_1,
       }
   } else if(!is.null(type2score_1) & is.null(type2score_2)) {
       names(type2score_1) <- c("word", "score_1")
-      type2score_2 <- setNames(type2score_1, c("word", "score_1"))
+      type2score_2 <- stats::setNames(type2score_1, c("word", "score_1"))
       show_score_diffs <- FALSE
   } else if(is.null(type2score_1) & !is.null(type2score_2)) {
       names(type2score_2) <- c("word", "score_2")
-      type2score_1 <- setNames(type2score_2, c("word", "score_1"))
+      type2score_1 <- stats::setNames(type2score_2, c("word", "score_1"))
       show_score_diffs <- FALSE
   } else {
       type2score_1 <- data.frame(word = type2freq_1$word, score_1 = 1)

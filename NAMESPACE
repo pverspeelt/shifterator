@@ -2,4 +2,3 @@
 
 export(proportion_shift)
 export(weighted_avg_shift)
-importFrom(glue,glue)
