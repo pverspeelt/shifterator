@@ -100,16 +100,7 @@ shift <- function(type2freq_1,
                                           stop_words = stop_words, 
                                           handle_missing_scores = handle_missing_scores)
   
-  type2freq_1 = preprocessed$type2freq_1_new
-  type2freq_2 = preprocessed$type2freq_2_new
-  type2score_1 = preprocessed$type2score_1_new
-  type2score_2 = preprocessed$type2score_2_new
-  types = preprocessed$final_types
-  filtered_types = preprocessed$filtered_types
-  no_score_types = preprocessed$no_score_types
-  adopted_score_types = preprocessed$adopted_score_types
-  
-  
+
   ## Set reference value
   # If user supplies reference_value with instructions on how to use the dictionary
   # the reference value should be correct for the corresponding dictionary.
@@ -125,36 +116,22 @@ shift <- function(type2freq_1,
   }
   
 
-
-  
-  
-  
   # Get shift scores
   normalization = normalization
   
   # get_shift_scores(details=False)
-  shift_scores <- get_shift_scores(type2freq_1 = type2freq_1,
-                                   type2freq_2 = type2freq_2,
-                                   type2score_1 = type2score_1,
-                                   type2score_2 = type2score_2,
-                                   types = types,
+  shift_scores <- get_shift_scores(all_system_scores = preprocessed$all_system_scores,
                                    reference_value = reference_value,
                                    normalization = normalization)
   
   
   
   
-  out <- structure(list(type2freq_1 = type2freq_1,
-                        type2freq_2 = type2freq_2,
-                        type2score_1 = type2score_1,
-                        type2score_2 = type2score_2,
-                        types = types,
-                        filtered_types = filtered_types,
-                        no_score_types = no_score_types,
-                        adopted_score_types = adopted_score_types,
-                        reference_value = reference_value,
-                        normalization = normalization,
-                        show_score_diffs = show_score_diffs,
+  out <- structure(list(filtered_types = preprocessed$filtered_types,
+                        no_score_types = preprocessed$no_score_types,
+                        adopted_score_types = preprocessed$adopted_score_types,
+                        words_to_exclude = preprocessed$words_to_exclude,
+                        words_in_stop_lens = preprocessed$words_in_stop_lens,
                         normalization = normalization,
                         shift_scores = shift_scores),
                    class = "shift"

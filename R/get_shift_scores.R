@@ -1,8 +1,4 @@
-get_shift_scores <- function(type2freq_1,
-                             type2freq_2,
-                             type2score_1,
-                             type2score_2,
-                             types,
+get_shift_scores <- function(all_system_scores,
                              reference_value,
                              normalization) {
   
@@ -37,8 +33,7 @@ get_shift_scores <- function(type2freq_1,
 
   # Calculate shift components
   # merge all word and score data.frames
-  type2_shift_scores <- Reduce(function(df1, df2) merge(df1,df2, by = "word", all = TRUE),
-                               list(type2freq_1, type2freq_2, type2score_1 ,type2score_2))
+  type2_shift_scores <- all_system_scores
   
   # Get total frequencies
   total_freq_1 <- sum(type2_shift_scores$freq_1, na.rm = TRUE)

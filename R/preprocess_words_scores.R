@@ -7,150 +7,121 @@ preprocess_words_scores <- function(type2freq_1,
                                     stop_words = NULL, 
                                     handle_missing_scores = "error") {
   
-
-    # Filters stop words according to a list of words or stop lens on the scores
-    # Parameters
-    # ----------
-    # type2freq_1, type2freq_2: dict
-    #     Keys are types, values are frequencies of those types
-    # type2score_1, type2freq_2: dict
-    #     Keys are types, values are scores associated with those types
-    # stop_lens: iteratble of 2-tuples
-    #     Denotes intervals that should be excluded from word shifts
-    # stop_words: iterable
-    #     Denotes words that should be excluded from word shifts
-    # handle_missing_scores_scores
-    #     If 'error', throws an error whenever a word has a score in one score
-    #     dictionary but not the other. If 'exclude', excludes any word that is
-    #     missing a score in one score dictionary from all word shift
-    #     calculations, regardless if it may have a score in the other dictionary.
-    #     If 'adopt' and the score is missing in one dictionary, then uses the
-    #     score from the other dictionary if it is available
-
-  ts_1 <- union(type2freq_1$word, type2score_1$word)
-  ts_2 <- union(type2freq_2$word, type2score_2$word)
-  ts <- union(ts_1, ts_2)
-
-  type2freq_1_new <- list() # data.frame(word = character(0), freq = numeric(0))
-  type2score_1_new <- list() # data.frame(word = character(0), score = numeric(0))
-  type2freq_2_new <- list() # data.frame(word = character(0), freq = numeric(0))
-  type2score_2_new <- list()# data.frame(word = character(0), score = numeric(0))
-  adopted_score_types <- character(0)
-  no_score_types <- character(0)
-  filtered_types <- character(0)
+  all_words_system <- union(type2freq_1$word, type2freq_2$word)
+  all_words_dict <- union(type2score_1$word, type2score_2$word)
+  all_words <- union(all_words_system, all_words_dict)
   
-  # process the words
-  for (word_to_process in ts) {
-    # Exclude words specified by stop words
-    if(sum(stop_words == word_to_process) == 1) {
-      filtered_types <- c(filtered_types, word_to_process)
-      next
-    } 
-    # Handle words with missing scores before excluding based on stop lens
-    if(sum(type2score_1$word == word_to_process) == 1){
-      score_1 <- type2score_1$score_1[type2score_1$word == word_to_process]
-    } else {
-      score_1 <- NA_real_
+  filtered_types <- ""
+  adopted_score_types <- ""
+  words_to_exclude <- ""
+  words_in_stop_lens <- ""
+  
+  # merge systems and dictionaries for preprocessing
+  all_systems <- merge(type2freq_1, type2freq_2, by = "word", all = TRUE)
+  all_dictionaries <- merge(type2score_1, type2score_2, by = "word", all = TRUE)
+  
+  
+  # words that need to be filtered based on the stop word list
+  if(!is.null(stop_words)){
+    filtered_types <- all_words_system[all_words_system %in% stop_words]
+    # remove stop words from the systems
+    if(length(filtered_types) >= 1) {
+      all_systems <- all_systems[!all_systems$word %in% filtered_types, ]
+      message(sprintf("There are %s words that are present in the stop word list.", length(filtered_types)),
+              "\nThese will be removed.")
     }
-    if(sum(type2score_2$word == word_to_process) == 1){
-      score_2 <- type2score_2$score_2[type2score_2$word == word_to_process]
-    } else {
-      score_2 <- NA_real_
-    }
-    # Word does not have score in either dictionary
-    if(sum(type2score_1$word == word_to_process) == 0 & sum(type2score_2$word == word_to_process) == 0){
-      no_score_types <- c(no_score_types, word_to_process)
-      next
-    } else if(sum(type2score_1$word == word_to_process) == 0 & sum(type2score_2$word == word_to_process) == 1){
-      # Word has score in dict2 but not dict1
-        if(handle_missing_scores == "adopt"){
-          score_1 <- type2score_2$score_1[type2score_2$word == word_to_process]
-          score_2 <- type2score_2$score_2[type2score_2$word == word_to_process]
-          adopted_score_types <- c(adopted_score_types, word_to_process)
-        } else if(handle_missing_scores == "error"){
-            stop(glue("Word has freq but no score in type2score_1: {word_to_process}"))
-        } else if(handle_missing_scores == "exclude"){
-          no_score_types <- c(no_score_types, word_to_process)
-          next
-        }
-     
-    } else if(sum(type2score_1$word == word_to_process) == 1 & sum(type2score_2$word == word_to_process) == 0){
-    # Word has score in dict1 but not dict2
-        if(handle_missing_scores == "adopt"){
-          score_1 <- type2score_1$score_1[type2score_1$word == word_to_process]
-          score_2 <- type2score_1$score_2[type2score_1$word == word_to_process]
-          adopted_score_types <- c(adopted_score_types, word_to_process)
-        } else if(handle_missing_scores == "error"){
-          stop(glue("Word has freq but no score in type2score_2: {word_to_process}"), 
-               call. = FALSE)
-        } else if(handle_missing_scores == "exclude"){
-          no_score_types <- c(no_score_types, word_to_process)
-          next
-        }
-    } else {
-        score_1 <- type2score_1$score_1[type2score_1$word == word_to_process]
-        score_2 <- type2score_2$score_2[type2score_2$word == word_to_process]
-    }
-    
-    # Exclude words based on stop lens
-    filter_word <- FALSE
-    if(is.null(stop_lens)){
-      filter_word <- FALSE
-    } else if((stop_lens[1] <= score_1 & score_1 <= stop_lens[2]) && (stop_lens[1] <= score_2 & score_2 <= stop_lens[2])){
-    # Word is in stop lens
-      filter_word <- TRUE
-      # One score is in stop lens but the other is not
-    } else if((stop_lens[1] <= score_1 & score_1 <= stop_lens[2]) || (stop_lens[1] <= score_2 & score_2 <= stop_lens[2])){
-        stop(glue("stop_lens {stoplens} cannot be applied consistently.", 
-                  " One word score falls within the stop lens while the other does not."))
-    }
-    
-    if(filter_word == TRUE){
-      filtered_types <- c(filtered_types, word_to_process)
-      next
-    }
-    
-    # Set words and freqs for words that pass all checks
-    type2score_1_new[word_to_process] <- score_1
-    if(sum(type2freq_1$word == word_to_process) == 1){
-      type2freq_1_new[word_to_process] <- type2freq_1$freq_1[type2freq_1$word == word_to_process]
-    } else {
-      type2freq_1_new[word_to_process] = 0
-    }
-    
-    type2score_2_new[word_to_process] = score_2
-    if(sum(type2freq_2$word == word_to_process) == 1){
-      type2freq_2_new[word_to_process] <- type2freq_2$freq_2[type2freq_2$word == word_to_process]
-    } else {
-      type2freq_2_new[word_to_process] = 0
-    }
-    
   }
   
-  # Update types to only be those that made it through all filters
-  final_types <- setdiff(setdiff(ts, filtered_types), no_score_types)
-  type2freq_1_new <- data.frame(word = names(type2freq_1_new), 
-                                freq_1 = Reduce(c, type2freq_1_new),
-                                stringsAsFactors = FALSE)
-  type2freq_2_new <- data.frame(word = names(type2freq_2_new), 
-                                freq_2 = Reduce(c, type2freq_2_new),
-                                stringsAsFactors = FALSE)
-  type2score_1_new <- data.frame(word = names(type2score_1_new), 
-                                 score_1 = Reduce(c, type2score_1_new),
-                                 stringsAsFactors = FALSE)
-  type2score_2_new <- data.frame(word = names(type2score_2_new), 
-                                 score_2 = Reduce(c, type2score_2_new),
-                                 stringsAsFactors = FALSE)
-
-  # return filtered word frequencies and scores. 
-  out <- list(type2freq_1_new = type2freq_1_new,
-              type2freq_2_new = type2freq_2_new,
-              type2score_1_new = type2score_1_new,
-              type2score_2_new = type2score_2_new,
-              final_types = final_types,
-              filtered_types = filtered_types,
-              no_score_types = no_score_types,
-              adopted_score_types = adopted_score_types)
-  out
+  # word does not have score in either dictionary. Remove these before handling missing scores
+  no_score_types <- all_words_system[!all_words_system %in% all_words_dict]
+  if(length(no_score_types) >= 1){
+    all_systems <- all_systems[!all_systems$word %in% no_score_types, ]
+    message(sprintf("There are %s words that are not present in a dictionary.", length(no_score_types)),
+            "\nThese will be removed.")
+  }
   
+  # word does not appear in type2freq_1 or type2freq_2 but exists in one of the dictionaries
+  # remove word that is not needed in the dictionaries
+  # also remove words that are in the stop word list
+  remove_before_handling_missing_scores <- c(filtered_types, all_words_dict[!all_words_dict %in% all_words_system])
+  
+  if(length(remove_before_handling_missing_scores) >= 1){
+    all_dictionaries <- all_dictionaries[!all_dictionaries$word %in% remove_before_handling_missing_scores, ]
+  }
+  
+  
+  # merge systems and dictionaries 
+  all_system_scores <- merge(all_systems, all_dictionaries, by = "word", all = TRUE)
+  # Word has score in dict2 but not dict1 then add score from dict2 to dict1
+  # Or word has score in dict1 but not dict2 then add score from dict1 to dict2
+  
+  if(handle_missing_scores == "adopt"){
+    adopted_score_types <- all_system_scores$word[(is.na(all_system_scores$score_1) & 
+                                                     !is.na(all_system_scores$score_2)) |
+                                                    (!is.na(all_system_scores$score_1) & 
+                                                       is.na(all_system_scores$score_2))]
+    all_system_scores$score_1 <- ifelse(is.na(all_system_scores$score_1) & !is.na(all_system_scores$score_2), 
+                                        all_system_scores$score_2, 
+                                        all_system_scores$score_1)
+    all_system_scores$score_2 <- ifelse(!is.na(all_system_scores$score_1) & is.na(all_system_scores$score_2), 
+                                        all_system_scores$score_1, 
+                                        all_system_scores$score_2)
+    
+  } else if(handle_missing_scores == "error"){
+    if(sum(is.na(all_system_scores$score_1) | is.na(all_system_scores$score_2)) != 0) {
+      check <- sum((is.na(all_system_scores$score_1) | is.na(all_system_scores$score_2)))
+      message(sprintf("There are %s words that have a frequency but no score in the dictionary.", check),
+              "\nFunction stopped. You might want to to use 'adopt' or 'exclude' in handle_missing_scores option.")
+      
+      # stop processing
+      stop_quietly()
+    }
+    
+  } else if(handle_missing_scores == "exclude"){
+    if(sum(is.na(all_system_scores$score_1) | is.na(all_system_scores$score_2)) != 0){
+      words_to_exclude <- all_system_scores$word[is.na(all_system_scores$score_1) | is.na(all_system_scores$score_2)]
+      if(length(words_to_exclude) >= 0){
+        message(sprintf("There are %s words excluded from the calculations", length(words_to_exclude)))
+      } else {
+        message("No words are excluded from the calculations")
+      }
+      all_system_scores <- all_system_scores[!all_system_scores$word %in% words_to_exclude, ]
+    }
+  }
+  
+  # create error all_system_scores$score_2[1] <- 0.8
+  
+  # Exclude words based on stop lens
+  if(!is.null(stop_lens)){
+    if(sum(!(stop_lens[1] <= all_system_scores$score_1 & all_system_scores$score_1 <= stop_lens[2]) ==
+           (stop_lens[1] <= all_system_scores$score_2 & all_system_scores$score_2 <= stop_lens[2]))){
+      
+      incorrect_stop_lens <- all_system_scores$word[
+        ((stop_lens[1] <= all_system_scores$score_1 & all_system_scores$score_1 <= stop_lens[2]) ==
+           (stop_lens[1] <= all_system_scores$score_2 & all_system_scores$score_2 <= stop_lens[2])) == FALSE]
+      
+      message(sprintf("Stop_lens %s - %s cannot be applied consistently.", stop_lens[1], stop_lens[2]),
+              "\nOne or more word scores from one dictionary fall within the stop lens,", 
+              "\nbut the same word from the other dictionary does not.",
+              sprintf("\nAn example is this word: %s", incorrect_stop_lens[1]))
+      
+      # stop processing    
+      stop_quietly()
+    } else {
+      words_in_stop_lens <- all_system_scores$word[
+        (stop_lens[1] <= all_system_scores$score_1 & all_system_scores$score_1 <= stop_lens[2]) &
+          (stop_lens[1] <= all_system_scores$score_2 & all_system_scores$score_2 <= stop_lens[2])]
+      
+      all_system_scores <- all_system_scores[!all_system_scores$word %in% words_in_lens, ]
+    }
+  }
+  
+  out <- list(filtered_types = filtered_types,
+              no_score_types = no_score_types,
+              adopted_score_types = adopted_score_types,
+              words_to_exclude = words_to_exclude,
+              words_in_stop_lens = words_in_stop_lens,
+              all_system_scores = all_system_scores)
+  out
 }
+
