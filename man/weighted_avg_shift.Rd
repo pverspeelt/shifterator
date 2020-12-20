@@ -63,6 +63,7 @@ Example to follow.
 }
 \seealso{
 Other shifts: 
+\code{\link{entropy_shift}()},
 \code{\link{proportion_shift}()}
 }
 \concept{shifts}

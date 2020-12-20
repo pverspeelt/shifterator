@@ -7,12 +7,12 @@
 get_relative_frequency(data)
 }
 \arguments{
-\item{data}{A data.frame containing words and their counts}
+\item{data}{A data.frame containing words and their counts.}
 }
 \value{
-A data.frame containing words and their relative frequencies
+A data.frame containing words and their relative frequencies.
 }
 \description{
-Calculates the relative frequency (proportion) of each word in the data.frame
+Calculates the relative frequency (proportion) of each word in the data.frame.
 }
 \keyword{internal}
