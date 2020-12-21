@@ -72,7 +72,9 @@ proportion_shift <- function(type2freq_1,
 }
 
 
-#' Title
+#' Entropy Shift
+#' 
+#' Shift object for calculating the shift in entropy between two systems.
 #'
 #' @inheritParams shift
 #' @param base The base for the logarithm when computing entropy scores.
@@ -107,6 +109,63 @@ entropy_shift <- function(type2freq_1,
   entropy_scores <- get_entropy_scores(type2score_1, type2score_2, base, alpha)
   type2score_1 <- entropy_scores[, c("word", "score_1")]
   type2score_2 <- entropy_scores[, c("word", "score_2")]
+  
+  shift(type2freq_1 = type2freq_1,
+        type2freq_2 = type2freq_2,
+        type2score_1 = type2score_1,
+        type2score_2 = type2score_2,
+        handle_missing_scores = "error",
+        stop_lens = NULL,
+        stop_words = NULL,
+        reference_value = reference_value,
+        normalization = "variation") 
+
+}
+
+
+#' Kullback-Leibler Divergence Shift
+#' 
+#' Shift object for calculating the Kullback-Leibler divergence (KLD) between two systems
+#' 
+#' 
+#' @inheritParams shift
+#' @param base The base for the logarithm when computing entropy scores.
+#' 
+#' @return Returns a list object of class shift.
+#' @export
+#' 
+#' @examples
+#' "Example to follow"
+kldivergence_shift <- function(type2freq_1,
+                               type2freq_2,
+                               base = 2L,
+                               reference_value = 0,
+                               normalization = "variation"){
+  
+  ### add checks on base
+  
+  ### add checks on type2freq_1 and type2freq_2 same checks in shift
+  
+  symmetric_difference <- function(x, y){
+    unique(c(setdiff(x, y), setdiff(y, x)))
+  }
+  
+  if(length(symmetric_difference(type2freq_1$word, type2freq_2$word)) > 0){
+    message(cat("There are types that appear in either type2freq_1 or",
+            "\ntype2freq_2 but not the other: the KL divergence is not",
+            "well defined"))
+    stop_quietly()
+  }
+  
+  # Get relative frequencies
+  type2score_1 <- get_relative_frequency(type2freq_1)
+  names(type2score_1) <- c("word", "score_1")
+  type2score_2 <- get_relative_frequency(type2freq_2)
+  names(type2score_2) <- c("word", "score_2")
+  
+  # Get surprisal scores
+  type2score_1$score_1 <- type2score_1$score_1 * -1 * log(type2score_1$score_1, base)
+  type2score_2$score_2 <- type2score_1$score_1 * -1 * log(type2score_1$score_1, base)
   
   shift(type2freq_1 = type2freq_1,
         type2freq_2 = type2freq_2,
