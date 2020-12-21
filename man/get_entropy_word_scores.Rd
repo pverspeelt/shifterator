@@ -4,7 +4,7 @@
 \alias{get_entropy_word_scores}
 \title{Get Entropy Word Scores}
 \usage{
-get_entropy_word_scores(score, base = 2, alpha = 1)
+get_entropy_word_scores(score, base = 2L, alpha = 1)
 }
 \arguments{
 \item{score}{The relative frequency.}

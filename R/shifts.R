@@ -128,8 +128,7 @@ entropy_shift <- function(type2freq_1,
 #' Shift object for calculating the Kullback-Leibler divergence (KLD) between two systems
 #' 
 #' 
-#' @inheritParams shift
-#' @param base The base for the logarithm when computing entropy scores.
+#' @inheritParams entropy_shift
 #' 
 #' @return Returns a list object of class shift.
 #' @export
@@ -178,3 +177,63 @@ kldivergence_shift <- function(type2freq_1,
         normalization = "variation") 
 
 }
+
+
+#' Jensen-Shannon Divergence Shift
+#' 
+#' Shift object for calculating the Jensen-Shannon divergence (JSD) between two systems
+#'
+#' @inheritParams entropy_shift 
+#' @param weight_1 Relative weight of type2freq_1 when constructing the mixed distribution.
+#' Together with weight_2 should sum to 1.
+#' @param weight_2 Relative weight of type2freq_2 when constructing the mixed distribution. 
+#' Together with weight_1 should sum to 1.
+#'
+#' @return Returns a list object of class shift.
+#' @export
+#'
+#' @examples
+#' "Example to follow"
+jsdivergence_shift <- function(type2freq_1,
+                               type2freq_2,
+                               weight_1 = 0.5,
+                               weight_2 = 0.5,
+                               base = 2L,
+                               alpha = 1,
+                               reference_value = 0,
+                               normalization = "variation"){
+  
+  # check that weigths sum to 1.  
+  if((weight_1 + weight_2) != 1){
+    stop(sprintf("weight_1 and weight_2 do not sum to 1. They sum to %s.", (weight_1 + weight_2)))
+  }
+  
+  # Get relative frequencies
+  type2score_1 <- get_relative_frequency(type2freq_1)
+  names(type2score_1) <- c("word", "score_1")
+  type2score_2 <- get_relative_frequency(type2freq_2)
+  names(type2score_2) <- c("word", "score_2")
+  
+  # get jsd scores
+  jsd_scores <- get_jsd_word_scores(type2score_1, type2score_2, 
+                                    weight_1 = weight_1, 
+                                    weight_2 = weight_2, 
+                                    base = base, 
+                                    alpha = alpha)
+  
+  type2score_1 <- jsd_scores[, c("word", "score_1")]
+  type2score_2 <- jsd_scores[, c("word", "score_2")]
+  
+  shift(type2freq_1 = type2freq_1,
+        type2freq_2 = type2freq_2,
+        type2score_1 = type2score_1,
+        type2score_2 = type2score_2,
+        handle_missing_scores = "error",
+        stop_lens = NULL,
+        stop_words = NULL,
+        reference_value = reference_value,
+        normalization = "variation") 
+
+}
+
+
