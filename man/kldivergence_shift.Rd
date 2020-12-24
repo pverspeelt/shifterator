@@ -40,3 +40,11 @@ Shift object for calculating the Kullback-Leibler divergence (KLD) between two s
 \examples{
 "Example to follow"
 }
+\seealso{
+Other shifts: 
+\code{\link{entropy_shift}()},
+\code{\link{jsdivergence_shift}()},
+\code{\link{proportion_shift}()},
+\code{\link{weighted_avg_shift}()}
+}
+\concept{shifts}

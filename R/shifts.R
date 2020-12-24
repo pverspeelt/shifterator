@@ -131,6 +131,7 @@ entropy_shift <- function(type2freq_1,
 #' @inheritParams entropy_shift
 #' 
 #' @return Returns a list object of class shift.
+#' @family shifts
 #' @export
 #' 
 #' @examples
@@ -190,6 +191,7 @@ kldivergence_shift <- function(type2freq_1,
 #' Together with weight_1 should sum to 1.
 #'
 #' @return Returns a list object of class shift.
+#' @family shifts
 #' @export
 #'
 #' @examples

@@ -52,3 +52,11 @@ Shift object for calculating the Jensen-Shannon divergence (JSD) between two sys
 \examples{
 "Example to follow"
 }
+\seealso{
+Other shifts: 
+\code{\link{entropy_shift}()},
+\code{\link{kldivergence_shift}()},
+\code{\link{proportion_shift}()},
+\code{\link{weighted_avg_shift}()}
+}
+\concept{shifts}

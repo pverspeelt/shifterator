@@ -46,6 +46,8 @@ example to follow
 }
 \seealso{
 Other shifts: 
+\code{\link{jsdivergence_shift}()},
+\code{\link{kldivergence_shift}()},
 \code{\link{proportion_shift}()},
 \code{\link{weighted_avg_shift}()}
 }

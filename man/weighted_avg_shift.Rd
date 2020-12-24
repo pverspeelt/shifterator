@@ -64,6 +64,8 @@ Example to follow.
 \seealso{
 Other shifts: 
 \code{\link{entropy_shift}()},
+\code{\link{jsdivergence_shift}()},
+\code{\link{kldivergence_shift}()},
 \code{\link{proportion_shift}()}
 }
 \concept{shifts}
