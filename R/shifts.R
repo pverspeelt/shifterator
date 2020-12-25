@@ -48,17 +48,25 @@ proportion_shift <- function(type2freq_1,
                              type2freq_2){
   
   
-  types <- union(type2freq_1$word, type2freq_2$word)
-  
-  ### need to vectorize this part of the code.
-  for(word_to_process in types){
-    if(sum(type2freq_1$word == word_to_process) == 0){
-      type2freq_1 <- rbind(type2freq_1, list(word = word_to_process, freq_1 = 0))
-    } else if(sum(type2freq_2$word == word_to_process) == 0){
-      type2freq_2 <- rbind(type2freq_2, list(word = word_to_process, freq_2 = 0))
-    }
+  # merge and split systems so that all words exist in both.
+  # words that were not in both systems are set to 0
+  merge_and_split <- function(x, y){
+    merged_set <- merge(x, y, by = "word", all = T)
+    split_1 <- merged_set[ , c("word", "freq_1")]
+    split_1$freq_1[is.na(split_1$freq_1)] <- 0  
+    split_2 <- merged_set[ , c("word", "freq_2")]
+    split_2$freq_2[is.na(split_2$freq_2)] <- 0 
+    
+    out <- list(type2freq_1 = split_1, 
+                type2freq_2 = split_2)
   }
-
+  
+  mas <- merge_and_split(type2freq_1, type2freq_2)
+  
+  # overwrite input systems with new values
+  type2freq_1 <- mas$type2freq_1
+  type2freq_2 <- mas$type2freq_2
+  
   shift(type2freq_1 = type2freq_1,
         type2freq_2 = type2freq_2,
         type2score_1 = NULL,
