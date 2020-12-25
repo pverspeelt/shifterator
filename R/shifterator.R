@@ -158,3 +158,24 @@ get_weighted_score <- function(type2freq_1, type2score_1){
   weighted_score = total_score / total_freq
   
 }
+
+
+get_shift_components <- function(x) {
+  # are the sums needed or is this enough?
+  pos_s_pos_p <- ifelse(x$type2s_ref_diff > 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0)
+  pos_s_neg_p <- ifelse(x$type2s_ref_diff > 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0)
+  neg_s_pos_p <- ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0)
+  neg_s_neg_p <- ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0)
+  pos_s <- ifelse(x$type2s_diff > 0, x$type2p_avg * x$type2s_diff, 0)
+  neg_s <- ifelse(x$type2s_diff <= 0, x$type2p_avg * x$type2s_diff, 0)
+  
+  out <- data.frame(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s)
+  out  
+}
+
+
+
+
+
+
+
