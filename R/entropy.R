@@ -11,7 +11,7 @@
 get_relative_frequency <- function(data) {
   # if length(class(data)) > 1 do as.data.frame
   # data <- as.data.frame(data)
-  data$score <- data[, 2] / sum(data[, 2])
+  data$score <- data[[2]] / sum(data[[2]])
   return(data[, c(1,3)])
 }
 
