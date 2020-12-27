@@ -40,8 +40,8 @@ get_shift_scores <- function(all_system_scores,
   total_freq_2 <- sum(type2_shift_scores$freq_2, na.rm = TRUE)
   
   # Get relative frequency of types in both systems
-  type2_shift_scores$type2p_1 <- type2_shift_scores$freq_1 / total_freq_1
-  type2_shift_scores$type2p_2 <- type2_shift_scores$freq_2 / total_freq_2
+  type2_shift_scores$type2p_1 <- ifelse(is.na(type2_shift_scores$freq_1), 0, type2_shift_scores$freq_1 / total_freq_1)
+  type2_shift_scores$type2p_2 <- ifelse(is.na(type2_shift_scores$freq_2), 0, type2_shift_scores$freq_2 / total_freq_2)
   type2_shift_scores$type2p_avg <- 0.5 * (type2_shift_scores$type2p_1 + type2_shift_scores$type2p_2)
   type2_shift_scores$type2p_diff <- type2_shift_scores$type2p_2 - type2_shift_scores$type2p_1
   type2_shift_scores$type2s_diff <- type2_shift_scores$score_2 - type2_shift_scores$score_1
