@@ -141,10 +141,15 @@ shift <- function(type2freq_1,
 }
 
 
-
-get_weighted_score <- function(type2freq_1, type2score_1){
+# return the weighted scores for a system.
+# needed to calculate the reference value if the value is set to "average".
+get_weighted_score <- function(type2freq, type2score){
   
-  types <- intersect(type2freq_1$word, type2score_1$word)
+  # Set the names correctly
+  names(type2freq) <- c("word", "freq")
+  names(type2score) <- c("word", "score")
+  
+  types <- intersect(type2freq$word, type2score$word)
   
   # Check we have a vocabulary to work with otherwise return 0
   if(length(types) == 0) {
@@ -152,30 +157,37 @@ get_weighted_score <- function(type2freq_1, type2score_1){
   }
   
   # Get weighted score and total frequency
-  total_freq <- sum(type2freq_1$freq[type2freq_1$word %in% types])
-  total_score = sum(type2score_1$value[type2score_1$word %in% types])
-    
-  weighted_score = total_score / total_freq
+  total_freq <- sum(type2freq$freq[type2freq$word %in% types])
+  total_score = sum(type2score$score[type2score$word %in% types] * type2freq$freq[type2freq$word %in% types])
   
+  weighted_score = total_score / total_freq
+  weighted_score
 }
 
-
+# return the summed shift component of the systems.
+# input shift_scores data.frame
 get_shift_components <- function(x) {
-  # are the sums needed or is this enough?
-  pos_s_pos_p <- ifelse(x$type2s_ref_diff > 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0)
-  pos_s_neg_p <- ifelse(x$type2s_ref_diff > 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0)
-  neg_s_pos_p <- ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0)
-  neg_s_neg_p <- ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0)
-  pos_s <- ifelse(x$type2s_diff > 0, x$type2p_avg * x$type2s_diff, 0)
-  neg_s <- ifelse(x$type2s_diff <= 0, x$type2p_avg * x$type2s_diff, 0)
+  pos_s_pos_p <- sum(ifelse(x$type2s_ref_diff > 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0))
+  pos_s_neg_p <- sum(ifelse(x$type2s_ref_diff > 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0))
+  neg_s_pos_p <- sum(ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0))
+  neg_s_neg_p <- sum(ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0))
+  pos_s <- sum(ifelse(x$type2s_diff > 0, x$type2p_avg * x$type2s_diff, 0))
+  neg_s <- sum(ifelse(x$type2s_diff <= 0, x$type2p_avg * x$type2s_diff, 0))
+  total <- sum(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s)
   
-  out <- data.frame(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s)
+  out <- data.frame(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s, total)
   out  
 }
 
 
-
-
-
-
+# Average weighted score of system.
+# Needed for main graph titel
+# input shift_scores data.frane
+avg_weighted_score <- function(x){
+  avg_system_1 <- sum(test$freq_1 * test$score_1, na.rm = T) / sum(test$freq_1, na.rm = T)
+  avg_system_2 <- sum(test$freq_2 * test$score_2, na.rm = T) / sum(test$freq_2, na.rm = T)
+  
+  weighted_scores <- data.frame(avg_system_1, avg_system_2)
+  weighted_scores
+}
 
