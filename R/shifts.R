@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples 
-#' Example to follow.
+#' "Example to follow."
 weighted_avg_shift <- function(type2freq_1,
                              type2freq_2,
                              type2score_1 = NULL,
@@ -43,7 +43,7 @@ weighted_avg_shift <- function(type2freq_1,
 #' @export
 #'
 #' @examples
-#' Example to follow.
+#' "Example to follow."
 proportion_shift <- function(type2freq_1, 
                              type2freq_2){
   
@@ -94,7 +94,7 @@ proportion_shift <- function(type2freq_1,
 #' @export
 #'
 #' @examples
-#' example to follow
+#' "example to follow"
 entropy_shift <- function(type2freq_1,
                           type2freq_2,
                           base = 2L,

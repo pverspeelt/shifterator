@@ -18,7 +18,7 @@ Returns a list object of class shift.
 Shift object for calculating differences in proportions of types across two systems.
 }
 \examples{
-Example to follow.
+"Example to follow."
 }
 \seealso{
 Other shifts: 

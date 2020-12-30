@@ -42,7 +42,7 @@ Returns a list object of class shift.
 Shift object for calculating the shift in entropy between two systems.
 }
 \examples{
-example to follow
+"example to follow"
 }
 \seealso{
 Other shifts: 

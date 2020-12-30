@@ -59,7 +59,7 @@ Returns a list object of class shift.
 Shift object for calculating weighted scores of two systems of types, and the shift between them.
 }
 \examples{
-Example to follow.
+"Example to follow."
 }
 \seealso{
 Other shifts: 
