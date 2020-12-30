@@ -184,8 +184,8 @@ get_shift_components <- function(x) {
 # Needed for main graph titel
 # input shift_scores data.frane
 avg_weighted_score <- function(x){
-  avg_system_1 <- sum(test$freq_1 * test$score_1, na.rm = T) / sum(test$freq_1, na.rm = T)
-  avg_system_2 <- sum(test$freq_2 * test$score_2, na.rm = T) / sum(test$freq_2, na.rm = T)
+  avg_system_1 <- sum(x$freq_1 * x$score_1, na.rm = T) / sum(x$freq_1, na.rm = T)
+  avg_system_2 <- sum(x$freq_2 * x$score_2, na.rm = T) / sum(x$freq_2, na.rm = T)
   
   weighted_scores <- data.frame(avg_system_1, avg_system_2)
   weighted_scores
