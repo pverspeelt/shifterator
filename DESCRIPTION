@@ -15,4 +15,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: tinytest
 Imports: 
-    ggplot2
+    ggplot2,
+    scales,
+    rlang

@@ -12,5 +12,6 @@ main_theme <- function(...){
                    panel.grid = ggplot2::element_line(colour = "grey"),
                    panel.grid.minor.x = ggplot2::element_line(color = NA),
                    panel.grid.minor.y = ggplot2::element_line(color = NA),
-                   panel.background = ggplot2::element_rect(fill = NA))
+                   panel.background = ggplot2::element_rect(fill = NA),
+                   axis.title.y = ggplot2::element_blank())
 }
