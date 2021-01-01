@@ -3,7 +3,7 @@
 #' When called this will construct word shift graphs.
 #'
 #' @param x A shift object.
-#' @text_names The names of the text to compare. Defaults to "Text 1" and "Text 2".
+#' @param text_names The names of the text to compare. Defaults to "Text 1" and "Text 2".
 #' @param top_n Integer value. Number of words to display in the main graph. Defaults to 50
 #'
 #' @return Returns the plots of all the shift graphs.

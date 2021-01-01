@@ -9,6 +9,8 @@ get_shift_graphs(x, text_names = c("Text 1", "Text 2"), top_n = 50L)
 \arguments{
 \item{x}{A shift object.}
 
+\item{text_names}{The names of the text to compare. Defaults to "Text 1" and "Text 2".}
+
 \item{top_n}{Integer value. Number of words to display in the main graph. Defaults to 50}
 }
 \value{
