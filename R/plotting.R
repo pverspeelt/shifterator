@@ -3,6 +3,7 @@
 #' When called this will construct word shift graphs.
 #'
 #' @param x A shift object.
+#' @text_names The names of the text to compare. Defaults to "Text 1" and "Text 2".
 #' @param top_n Integer value. Number of words to display in the main graph. Defaults to 50
 #'
 #' @return Returns the plots of all the shift graphs.
@@ -10,7 +11,9 @@
 #'
 #' @examples
 #' "example to follow"
-get_shift_graphs <- function(x, top_n = 50L){
+get_shift_graphs <- function(x, 
+                             text_names = c("Text 1", "Text 2"),
+                             top_n = 50L){
   
   if(length(class(x)) > 1){
     stop("Please supply a shift object.", 
@@ -81,5 +84,32 @@ create_main_plot <- function(top_shift_scores, top_n, pos_colour, neg_colour){
   
   main_plot
   
+}
+
+
+
+create_text_size_plot <- function(x, text_names){
+  
+  n1 = sum(x$shift_scores$freq_1, na.rm = TRUE)
+  n2 = sum(x$shift_scores$freq_2, na.rm = TRUE)
+  n = max(c(n1, n2))
+  n1 <- n1/n
+  n2 <- n2/n
+  
+  text_size <- data.frame(text_names, 
+                          total = c(n1, n2),
+                          order = c(1, 2))
+  
+  text_size_plot <- ggplot2::ggplot(text_size, 
+                                    ggplot2::aes(x = reorder(.data$text_names, 
+                                                             sort(.data$order, 
+                                                                  decreasing = TRUE)), 
+                                                 y = .data$total)) +
+    ggplot2::geom_bar(stat = "identity") +
+    ggplot2::coord_flip() + 
+    ggplot2::ggtitle("Text Size:") +
+    text_size_theme() 
+  
+  text_size_plot
 }
 

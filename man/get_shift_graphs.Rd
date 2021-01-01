@@ -4,7 +4,7 @@
 \alias{get_shift_graphs}
 \title{Generate a collection of shift graphs}
 \usage{
-get_shift_graphs(x, top_n = 50L)
+get_shift_graphs(x, text_names = c("Text 1", "Text 2"), top_n = 50L)
 }
 \arguments{
 \item{x}{A shift object.}
