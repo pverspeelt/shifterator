@@ -76,7 +76,7 @@ create_main_plot <- function(top_shift_scores, top_n, pos_colour, neg_colour){
     ggplot2::scale_fill_manual(values = c(neg_colour, pos_colour), 
                                guide = FALSE) +
     ggplot2::scale_y_continuous(labels = scales::percent, 
-                                limits = round(shift_ylims, digits = 2)) + 
+                                limits = shift_ylims) + 
     ggplot2::scale_x_reverse(breaks = x_label_breaks) + 
     ggplot2::coord_flip() +
     main_theme()
@@ -107,7 +107,7 @@ create_text_size_plot <- function(x, text_names){
                                                  y = .data$total)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::coord_flip() + 
-    ggplot2::ggtitle("Text Size:") +
+    ggplot2::ggtitle("Relative Text Size:") +
     text_size_theme() 
   
   text_size_plot
