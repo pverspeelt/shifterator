@@ -126,7 +126,7 @@ entropy_shift <- function(type2freq_1,
         stop_lens = NULL,
         stop_words = NULL,
         reference_value = reference_value,
-        normalization = "variation") 
+        normalization = normalization) 
 
 }
 
@@ -183,7 +183,7 @@ kldivergence_shift <- function(type2freq_1,
         stop_lens = NULL,
         stop_words = NULL,
         reference_value = reference_value,
-        normalization = "variation") 
+        normalization = normalization) 
 
 }
 
@@ -242,7 +242,7 @@ jsdivergence_shift <- function(type2freq_1,
         stop_lens = NULL,
         stop_words = NULL,
         reference_value = reference_value,
-        normalization = "variation") 
+        normalization = normalization) 
 
 }
 
