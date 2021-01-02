@@ -30,3 +30,8 @@ text_size_theme <- function(...){
                                     face = "bold.italic", 
                                     colour = "black"))
 }
+
+# use in cumulative contribution plot
+scientific_to_10 <- function(x){
+  parse(text=gsub("1e\\+*", " 10^", scales::scientific_format()(x))) 
+}

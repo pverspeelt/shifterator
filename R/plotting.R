@@ -113,3 +113,32 @@ create_text_size_plot <- function(x, text_names){
   text_size_plot
 }
 
+
+
+cumulative_contribution_plot <- function(x, top_n){
+  
+  
+  if(x$normalization == "variation"){
+    cum_scores <- cumsum(abs(x$shift_scores$type2shift_score[order(abs(x$shift_scores$type2shift_score), 
+                                                                   decreasing = TRUE)]))
+    y_label <- expression(sum(abs(delta * Phi [tau])))
+  } else {
+    cum_scores <- cumsum(x$shift_scores$type2shift_score[order(abs(x$shift_scores$type2shift_score), 
+                                                               decreasing = TRUE)])  
+    y_label = expression(sum(delta * Phi [tau]))
+  }
+  
+  cum_contribution_plot <- ggplot2::ggplot() + 
+    ggplot2::geom_line(ggplot2::aes(x = seq_along(cum_scores), 
+                                    y = cum_scores)) +
+    ggplot2::scale_x_log10(labels = scientific_to_10) +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
+    # set intercept based on top_n supplied for cutoff in main graph
+    ggplot2::geom_vline(xintercept = top_n) + 
+    ggplot2::theme_bw() + 
+    ggplot2::theme(axis.title.x = ggplot2::element_blank()) +
+    ggplot2::ylab(y_label)
+  
+  cum_contribution_plot
+  
+}
