@@ -20,15 +20,17 @@ weighted_avg_shift <- function(type2freq_1,
                              stop_words = "",
                              normalization = "variation"){
   
-  shift(type2freq_1 = type2freq_1,
-        type2freq_2 = type2freq_2,
-        type2score_1 = type2score_1,
-        type2score_2 = type2score_2,
-        reference_value = reference_value,
-        handle_missing_scores = handle_missing_scores,
-        stop_lens = stop_lens,
-        stop_words = stop_words,
-        normalization = normalization) 
+  weighted_out <- shift(type2freq_1 = type2freq_1,
+                        type2freq_2 = type2freq_2,
+                        type2score_1 = type2score_1,
+                        type2score_2 = type2score_2,
+                        reference_value = reference_value,
+                        handle_missing_scores = handle_missing_scores,
+                        stop_lens = stop_lens,
+                        stop_words = stop_words,
+                        normalization = normalization) 
+  
+  weighted_out
 }
 
 
@@ -67,16 +69,17 @@ proportion_shift <- function(type2freq_1,
   type2freq_1 <- mas$type2freq_1
   type2freq_2 <- mas$type2freq_2
   
-  shift(type2freq_1 = type2freq_1,
-        type2freq_2 = type2freq_2,
-        type2score_1 = NULL,
-        type2score_2 = NULL,
-        reference_value = 0,
-        handle_missing_scores = "error",
-        stop_lens = NULL,
-        stop_words = NULL,
-        normalization = "variation") 
+  prop_out <- shift(type2freq_1 = type2freq_1,
+                    type2freq_2 = type2freq_2,
+                    type2score_1 = NULL,
+                    type2score_2 = NULL,
+                    reference_value = 0,
+                    handle_missing_scores = "error",
+                    stop_lens = NULL,
+                    stop_words = NULL,
+                    normalization = "variation") 
   
+  prop_out
 }
 
 
@@ -118,16 +121,17 @@ entropy_shift <- function(type2freq_1,
   type2score_1 <- entropy_scores[, c("word", "score_1")]
   type2score_2 <- entropy_scores[, c("word", "score_2")]
   
-  shift(type2freq_1 = type2freq_1,
-        type2freq_2 = type2freq_2,
-        type2score_1 = type2score_1,
-        type2score_2 = type2score_2,
-        handle_missing_scores = "error",
-        stop_lens = NULL,
-        stop_words = NULL,
-        reference_value = reference_value,
-        normalization = normalization) 
-
+  entropy_out <- shift(type2freq_1 = type2freq_1,
+                       type2freq_2 = type2freq_2,
+                       type2score_1 = type2score_1,
+                       type2score_2 = type2score_2,
+                       handle_missing_scores = "error",
+                       stop_lens = NULL,
+                       stop_words = NULL,
+                       reference_value = reference_value,
+                       normalization = normalization) 
+  
+  entropy_out
 }
 
 
@@ -175,16 +179,17 @@ kldivergence_shift <- function(type2freq_1,
   type2score_1$score_1 <- type2score_1$score_1 * -1 * log(type2score_1$score_1, base)
   type2score_2$score_2 <- type2score_1$score_1 * -1 * log(type2score_1$score_1, base)
   
-  shift(type2freq_1 = type2freq_1,
-        type2freq_2 = type2freq_2,
-        type2score_1 = type2score_1,
-        type2score_2 = type2score_2,
-        handle_missing_scores = "error",
-        stop_lens = NULL,
-        stop_words = NULL,
-        reference_value = reference_value,
-        normalization = normalization) 
-
+  kld_out <- shift(type2freq_1 = type2freq_1,
+                   type2freq_2 = type2freq_2,
+                   type2score_1 = type2score_1,
+                   type2score_2 = type2score_2,
+                   handle_missing_scores = "error",
+                   stop_lens = NULL,
+                   stop_words = NULL,
+                   reference_value = reference_value,
+                   normalization = normalization) 
+  
+  kld_out
 }
 
 
@@ -234,16 +239,23 @@ jsdivergence_shift <- function(type2freq_1,
   type2score_1 <- jsd_scores[, c("word", "score_1")]
   type2score_2 <- jsd_scores[, c("word", "score_2")]
   
-  shift(type2freq_1 = type2freq_1,
-        type2freq_2 = type2freq_2,
-        type2score_1 = type2score_1,
-        type2score_2 = type2score_2,
-        handle_missing_scores = "error",
-        stop_lens = NULL,
-        stop_words = NULL,
-        reference_value = reference_value,
-        normalization = normalization) 
-
+  jsd_out <- shift(type2freq_1 = type2freq_1,
+                   type2freq_2 = type2freq_2,
+                   type2score_1 = type2score_1,
+                   type2score_2 = type2score_2,
+                   handle_missing_scores = "error",
+                   stop_lens = NULL,
+                   stop_words = NULL,
+                   reference_value = reference_value,
+                   normalization = normalization) 
+  
+  if(alpha == 1 & reference_value == 0){
+    jsd_out$all_pos_contributions <- TRUE
+  } else {
+    jsd_out$all_pos_contributions <- FALSE 
+  }
+  
+  jsd_out
 }
 
 

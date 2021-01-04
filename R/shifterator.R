@@ -133,6 +133,7 @@ shift <- function(type2freq_1,
                         words_to_exclude = preprocessed$words_to_exclude,
                         words_in_stop_lens = preprocessed$words_in_stop_lens,
                         normalization = normalization,
+                        show_score_diffs = show_score_diffs,
                         shift_scores = shift_scores),
                    class = "shift"
                    )

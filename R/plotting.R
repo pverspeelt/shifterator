@@ -30,11 +30,20 @@ get_shift_graphs <- function(x,
                  call. = FALSE)
   }
   
+  # set all_pos_contributions
+  if(exists("all_pos_contributions", where = x)){
+    all_pos_contributions <- x$all_pos_contributions
+  } else {
+    all_pos_contributions <- FALSE
+  }
+  
+  # get top_n shift scores
   top_shift_scores <- utils::head(x$shift_scores[order(abs(x$shift_scores$type2shift_score), 
                                                        decreasing = TRUE) , , drop = FALSE], 
                                   top_n)
   
-  # set main colours
+  
+  # set main colours (replace with get_bar_colours?)
   pos_colour <- "#FECC5D"
   neg_colour <- "#9E75B7"
   
