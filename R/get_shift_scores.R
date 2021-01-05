@@ -58,12 +58,14 @@ get_shift_scores <- function(all_system_scores,
   } else if(normalization == "trajectory" && total_diff != 0){
     norm_value <- abs(total_diff)
   } else {
-    norm_value = 1
+    norm_value <- 1
   }
   
   # Normalize based on norm_value
   type2_shift_scores$type2shift_score <- type2_shift_scores$type2shift_score / norm_value
   
-  type2_shift_scores
+  shift_scores_out <- list(shift_scores = type2_shift_scores,
+                           norm_value = norm_value)
   
+  shift_scores_out
 }

@@ -120,9 +120,9 @@ shift <- function(type2freq_1,
   normalization = normalization
   
   # get_shift_scores(details=False)
-  shift_scores <- get_shift_scores(all_system_scores = preprocessed$all_system_scores,
-                                   reference_value = reference_value,
-                                   normalization = normalization)
+  shift_scores_in <- get_shift_scores(all_system_scores = preprocessed$all_system_scores,
+                                      reference_value = reference_value,
+                                      normalization = normalization)
   
   
   
@@ -133,8 +133,9 @@ shift <- function(type2freq_1,
                         words_to_exclude = preprocessed$words_to_exclude,
                         words_in_stop_lens = preprocessed$words_in_stop_lens,
                         normalization = normalization,
+                        norm_value = shift_scores_in$norm_value,
                         show_score_diffs = show_score_diffs,
-                        shift_scores = shift_scores),
+                        shift_scores = shift_scores_in$shift_scores),
                    class = "shift"
                    )
   out
