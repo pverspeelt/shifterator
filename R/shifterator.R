@@ -168,7 +168,7 @@ get_weighted_score <- function(type2freq, type2score){
 
 # return the summed shift component of the systems.
 # input shift_scores data.frame
-get_shift_components <- function(x) {
+get_shift_components <- function(x, all_pos_contributions) {
   pos_s_pos_p <- sum(ifelse(x$type2s_ref_diff > 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0))
   pos_s_neg_p <- sum(ifelse(x$type2s_ref_diff > 0 & x$type2p_diff <= 0, x$type2p_diff * x$type2s_ref_diff, 0))
   neg_s_pos_p <- sum(ifelse(x$type2s_ref_diff <= 0 & x$type2p_diff > 0, x$type2p_diff * x$type2s_ref_diff, 0))
@@ -177,8 +177,16 @@ get_shift_components <- function(x) {
   neg_s <- sum(ifelse(x$type2s_diff <= 0, x$type2p_avg * x$type2s_diff, 0))
   total <- sum(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s)
   
-  out <- data.frame(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s, total)
-  out  
+  if(all_pos_contributions == TRUE){
+    all_pos_pos <- sum(ifelse(x$type2shift_score > 0, x$type2shift_score, 0))
+    all_pos_neg <- sum(ifelse(x$type2shift_score < 0, x$type2shift_score, 0))
+  } else {
+    all_pos_pos <- 0
+    all_pos_neg <- 0
+  }
+  
+  out <- data.frame(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s, total, all_pos_pos, all_pos_neg)
+  out   
 }
 
 
