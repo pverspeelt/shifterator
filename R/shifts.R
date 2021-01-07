@@ -77,7 +77,8 @@ proportion_shift <- function(type2freq_1,
                     handle_missing_scores = "error",
                     stop_lens = NULL,
                     stop_words = NULL,
-                    normalization = "variation") 
+                    normalization = "variation",
+                    show_total = FALSE) 
   
   prop_out
 }

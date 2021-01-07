@@ -37,6 +37,13 @@ get_shift_graphs <- function(x,
     all_pos_contributions <- FALSE
   }
   
+  if(exists("show_total", where = x)){
+    show_total <- x$show_total
+  } else {
+    show_total <- TRUE
+  }
+  
+  
   # get top_n shift scores
   top_shift_scores <- utils::head(x$shift_scores[order(abs(x$shift_scores$type2shift_score), 
                                                        decreasing = TRUE) , , drop = FALSE], 
