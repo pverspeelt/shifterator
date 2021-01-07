@@ -19,16 +19,16 @@ main_theme <- function(...){
 
 # theme for the text size inset plot
 text_size_theme <- function(...){
-  theme_minimal() +
-    theme(panel.grid = ggplot2::element_blank(),
-          axis.title.x = ggplot2::element_blank(),
-          axis.text.x = ggplot2::element_blank(),
-          axis.ticks.x = ggplot2::element_blank(),
-          axis.title.y = ggplot2::element_blank(),
-          plot.title = element_text(size = rel(1.5), 
-                                    lineheight = .9,
-                                    face = "bold.italic", 
-                                    colour = "black"))
+  ggplot2::theme_minimal() +
+    ggplot2::theme(panel.grid = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.ticks.x = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   plot.title = ggplot2::element_text(size = ggplot2::rel(1.5), 
+                                                      lineheight = .9,
+                                                      face = "bold.italic", 
+                                                      colour = "black"))
 }
 
 # use in cumulative contribution plot

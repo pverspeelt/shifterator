@@ -77,8 +77,10 @@ proportion_shift <- function(type2freq_1,
                     handle_missing_scores = "error",
                     stop_lens = NULL,
                     stop_words = NULL,
-                    normalization = "variation",
-                    show_total = FALSE) 
+                    normalization = "variation")
+  
+  # Plotting for proportion shift does not need a total.
+  prop_out$show_total <- FALSE
   
   prop_out
 }

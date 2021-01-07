@@ -117,9 +117,9 @@ create_text_size_plot <- function(x, text_names){
                           order = c(1, 2))
   
   text_size_plot <- ggplot2::ggplot(text_size, 
-                                    ggplot2::aes(x = reorder(.data$text_names, 
-                                                             sort(.data$order, 
-                                                                  decreasing = TRUE)), 
+                                    ggplot2::aes(x = stats::reorder(.data$text_names, 
+                                                                    sort(.data$order, 
+                                                                         decreasing = TRUE)), 
                                                  y = .data$total)) +
     ggplot2::geom_bar(stat = "identity") +
     ggplot2::coord_flip() + 
