@@ -15,6 +15,16 @@ get_shift_graphs <- function(x,
                              text_names = c("Text 1", "Text 2"),
                              top_n = 50L){
   
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("ggplot2 is needed for this function to work. Install it via install.packages(\"ggplot2\")", 
+         call. = FALSE)
+  }
+  
+  if (!requireNamespace("patchwork", quietly = TRUE)) {
+    stop("patchwork is needed for this function to work. Install it via install.packages(\"patchwork\")", 
+         call. = FALSE)
+  }
+  
   if(length(class(x)) > 1){
     stop("Please supply a shift object.", 
          call. = FALSE)
@@ -72,8 +82,8 @@ create_main_plot <- function(top_shift_scores, top_n, pos_colour, neg_colour){
   # set hjust paramaters ("outward" is to close to the edge of the bars)
   shift_hj <- ifelse(top_shift_scores$type2shift_score >= 0, -0.2, 1.2)
   # set scale limits
-  shift_ylims <- c(-max(abs(top_shift_scores$type2shift_score)), 
-                   max(abs(top_shift_scores$type2shift_score)))
+  shift_ylims <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
+                   max(abs(top_shift_scores$type2shift_score)) + 0.005)
 
   # create x axis ordering, labels and breaks
   top_shift_scores$ordering <- 1:top_n
@@ -95,7 +105,8 @@ create_main_plot <- function(top_shift_scores, top_n, pos_colour, neg_colour){
                                 limits = shift_ylims) + 
     ggplot2::scale_x_reverse(breaks = x_label_breaks) + 
     ggplot2::coord_flip() +
-    main_theme()
+    ggplot2::ylab(expression("Per type average score shift" ~ delta * s ["avg, r"] * "(%)")) +
+    main_theme() 
   
   
   main_plot

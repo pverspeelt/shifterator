@@ -25,7 +25,8 @@ text_size_theme <- function(...){
                    axis.text.x = ggplot2::element_blank(),
                    axis.ticks.x = ggplot2::element_blank(),
                    axis.title.y = ggplot2::element_blank(),
-                   plot.title = ggplot2::element_text(size = ggplot2::rel(1.5), 
+                   plot.title = ggplot2::element_text(size = ggplot2::rel(1), 
+                                                      hjust = 0.5,
                                                       lineheight = .9,
                                                       face = "bold.italic", 
                                                       colour = "black"))
