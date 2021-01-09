@@ -17,4 +17,5 @@ Suggests: tinytest
 Imports: 
     ggplot2,
     scales,
-    rlang
+    rlang,
+    patchwork
