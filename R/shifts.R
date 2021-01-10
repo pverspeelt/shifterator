@@ -30,6 +30,9 @@ weighted_avg_shift <- function(type2freq_1,
                         stop_words = stop_words,
                         normalization = normalization) 
   
+  # Needed for showing the score on the plotting title.
+  weighted_out$avg_score <- avg_weighted_score(weighted_out$shift_scores)
+  
   weighted_out
 }
 
@@ -133,6 +136,9 @@ entropy_shift <- function(type2freq_1,
                        stop_words = NULL,
                        reference_value = reference_value,
                        normalization = normalization) 
+  
+  # Needed for showing the score on the plotting title.
+  entropy_out$avg_score <-  avg_weighted_score(entropy_out$shift_scores)
   
   entropy_out
 }
