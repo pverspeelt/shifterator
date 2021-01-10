@@ -66,6 +66,9 @@ create_total_contributions_plot <- function(top_shift_scores,
   # get the colours for the plot
   colour <- .score_colours[bar_order] 
   
+  # build title
+  title <- sprintf("Shift of %s vs %s", text_names[1], text_names[2])
+  
   ggplot2::ggplot(plotting_data, 
                   ggplot2::aes(x = labels , y = value)) +
     ggplot2::geom_bar(stat = "identity", fill = colour) +
@@ -79,7 +82,9 @@ create_total_contributions_plot <- function(top_shift_scores,
                    axis.title.x = ggplot2::element_blank(),
                    panel.grid.major.y = ggplot2::element_line(color = NA),
                    plot.title = ggplot2::element_text(size = ggplot2::rel(1), 
-                                                      hjust = 0.5))
+                                                      hjust = 0.5)) +
+    ggplot2::ggtitle(title)
+  
 
 }
 

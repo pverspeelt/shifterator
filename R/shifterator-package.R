@@ -1,4 +1,5 @@
 #' @importFrom "rlang" ".data" 
+#' @import "patchwork"
 #' @keywords internal
 "_PACKAGE"
 

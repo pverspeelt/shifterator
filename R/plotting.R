@@ -63,7 +63,7 @@ get_shift_graphs <- function(x,
   y_limits <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
                    max(abs(top_shift_scores$type2shift_score)) + 0.005)
   
-  # set main colours Supply totals. later check on how to show details.
+  # set main colours to supply totals. later check on how to show details.
   bar_colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
   
   main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
@@ -71,8 +71,45 @@ get_shift_graphs <- function(x,
                                 y_limits = y_limits,
                                 bar_colours = bar_colours$bar_colours_total)
   
-  # for now print. When done, patchword will take over.
-  print(main_plot)
+  # calculate the totals for the total contributions plot
+  totals <- get_shift_components(x$shift_scores, all_pos_contributions)
+  
+  total_plot <- create_total_contributions_plot(top_shift_scores = top_shift_scores,
+                                                totals = totals, 
+                                                show_score_diffs = x$show_score_diffs,
+                                                text_names = text_names,
+                                                norm_value = x$norm_value,
+                                                all_pos_contributions = all_pos_contributions,
+                                                y_limits = y_limits,
+                                                detailed = FALSE,
+                                                show_total = show_total)
+  
+  cum_contribution_plot <- cumulative_contribution_plot(x, top_n)
+  text_size_plot <- create_text_size_plot(x, text_names)
+  
+  # Plotting area
+  if(exists("avg_score", where = x)){
+    grob_text <- bquote(atop(.(text_names[1])*":" ~ Phi[avg] ~" = " ~  .(round(x$avg_score[[1]], 2)),
+                             .(text_names[2])*":" ~ Phi[avg] ~" = " ~  .(round(x$avg_score[[2]], 2))))
+    
+    grob <- grid::textGrob(grob_text)
+    
+    layout <- c(patchwork::area(1, 1, 1, 3),
+                patchwork::area(2, 1, 4, 3),
+                patchwork::area(2, 4),
+                patchwork::area(3, 4),
+                patchwork::area(4, 4))
+    
+    total_plot + main_plot + grob + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, heights = c(1, 4, 4, 4))
+    
+  } else {
+    layout <- c(patchwork::area(1, 1, 1, 3),
+                patchwork::area(2, 1, 4, 3),
+                patchwork::area(3, 4),
+                patchwork::area(4, 4))
+    
+    total_plot + main_plot + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, heights = c(1, 4, 4, 4))
+  }
 }
 
 
