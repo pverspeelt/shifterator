@@ -59,31 +59,29 @@ get_shift_graphs <- function(x,
                                                        decreasing = TRUE) , , drop = FALSE], 
                                   top_n)
   
+  # set scale limits for main and total plots
+  y_limits <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
+                   max(abs(top_shift_scores$type2shift_score)) + 0.005)
   
-  # set main colours (replace with get_bar_colours?)
-  pos_colour <- "#FECC5D"
-  neg_colour <- "#9E75B7"
+  # set main colours Supply totals. later check on how to show details.
+  bar_colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
   
   main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
-                                top_n = top_n, 
-                                pos_colour = pos_colour,
-                                neg_colour = neg_colour)
+                                top_n = top_n,
+                                y_limits = y_limits,
+                                bar_colours = bar_colours$bar_colours_total)
   
   # for now print. When done, patchword will take over.
   print(main_plot)
 }
 
 
-create_main_plot <- function(top_shift_scores, top_n, pos_colour, neg_colour){
+create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours){
   
   # set main plotting params
-  # set colours
-  shift_cols <- ifelse(top_shift_scores$type2shift_score >= 0, pos_colour, neg_colour)
   # set hjust paramaters ("outward" is to close to the edge of the bars)
   shift_hj <- ifelse(top_shift_scores$type2shift_score >= 0, -0.2, 1.2)
-  # set scale limits
-  shift_ylims <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
-                   max(abs(top_shift_scores$type2shift_score)) + 0.005)
+
 
   # create x axis ordering, labels and breaks
   top_shift_scores$ordering <- 1:top_n
@@ -93,16 +91,16 @@ create_main_plot <- function(top_shift_scores, top_n, pos_colour, neg_colour){
   main_plot <- ggplot2::ggplot(top_shift_scores, 
                                ggplot2::aes(x = .data$ordering, 
                                             y = .data$type2shift_score, 
-                                            fill = shift_cols))
+                                            fill = bar_colours))
   main_plot <- main_plot + 
     ggplot2::geom_bar(stat = "identity") + 
     ggplot2::geom_text(ggplot2::aes(label = .data$word), 
                        size = 3, 
                        hjust = shift_hj) + 
-    ggplot2::scale_fill_manual(values = c(neg_colour, pos_colour), 
+    ggplot2::scale_fill_manual(values = unique(bar_colours), 
                                guide = FALSE) +
     ggplot2::scale_y_continuous(labels = scales::percent, 
-                                limits = shift_ylims) + 
+                                limits = y_limits) + 
     ggplot2::scale_x_reverse(breaks = x_label_breaks) + 
     ggplot2::coord_flip() +
     ggplot2::ylab(expression("Per type average score shift" ~ delta * s ["avg, r"] * "(%)")) +
