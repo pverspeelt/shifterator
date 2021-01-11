@@ -4,6 +4,8 @@
 # shifterator
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/pverspeelt/shifterator/workflows/R-CMD-check/badge.svg)](https://github.com/pverspeelt/shifterator/actions)
 <!-- badges: end -->
 
 The Shifterator package provides functionality for constructing word

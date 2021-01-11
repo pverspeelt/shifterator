@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # shifterator
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/pverspeelt/shifterator/workflows/R-CMD-check/badge.svg)](https://github.com/pverspeelt/shifterator/actions)
 <!-- badges: end -->
 
 The Shifterator package provides functionality for constructing word shift graphs, vertical bart charts that quantify which words contribute to a pairwise difference between two texts and how they contribute. By allowing you to look at changes in how words are used, word shifts help you to conduct analyses of sentiment, entropy, and divergence that are fundamentally more interpretable.
