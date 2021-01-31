@@ -26,7 +26,7 @@ create_total_contributions_plot <- function(top_shift_scores,
   
   
   bar_order <- get_bar_order(show_score_diffs, all_pos_contributions, 
-                             detailed = F, show_total = T)
+                             detailed = detailed, show_total = show_total)
   
   # create a function of this and put it outside of the create? 
   # or use the create as 
@@ -61,7 +61,9 @@ create_total_contributions_plot <- function(top_shift_scores,
   value <- value * rescale_factor
   
   # data frame for ggplot.
-  plotting_data <- data.frame(labels = unlist(shift_labels[bar_order]), value)
+  plotting_data <- data.frame(labels = factor(unlist(shift_labels[bar_order]), 
+                                              levels = (unlist(shift_labels[bar_order]))), 
+                              value)
   
   # get the colours for the plot
   colour <- .score_colours[bar_order] 
