@@ -127,22 +127,19 @@ create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours){
     
   main_plot <- ggplot2::ggplot(top_shift_scores, 
                                ggplot2::aes(x = .data$ordering, 
-                                            y = .data$type2shift_score, 
-                                            fill = bar_colours))
+                                            y = .data$type2shift_score))
+                               
   main_plot <- main_plot + 
-    ggplot2::geom_bar(stat = "identity") + 
+    ggplot2::geom_col(fill = bar_colours) + 
     ggplot2::geom_text(ggplot2::aes(label = .data$word), 
                        size = 3, 
                        hjust = shift_hj) + 
-    ggplot2::scale_fill_manual(values = unique(bar_colours), 
-                               guide = FALSE) +
     ggplot2::scale_y_continuous(labels = scales::percent, 
                                 limits = y_limits) + 
     ggplot2::scale_x_reverse(breaks = x_label_breaks) + 
     ggplot2::coord_flip() +
     ggplot2::ylab(expression("Per type average score shift" ~ delta * s ["avg, r"] * "(%)")) +
     main_theme() 
-  
   
   main_plot
   
