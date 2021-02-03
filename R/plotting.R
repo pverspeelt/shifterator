@@ -5,6 +5,9 @@
 #' @param x A shift object.
 #' @param text_names The names of the text to compare. Defaults to "Text 1" and "Text 2".
 #' @param top_n Integer value. Number of words to display in the main graph. Defaults to 50
+#' @param detailed Logical. Defaults to "FALSE". By default, the shifts display 
+#' the overall contributions, rather than the detailed component contributions. 
+#' By setting this value to "TRUE" the full details of the shifts are visualized.
 #'
 #' @return Returns the plots of all the shift graphs.
 #' @export
@@ -13,7 +16,8 @@
 #' "example to follow"
 get_shift_graphs <- function(x, 
                              text_names = c("Text 1", "Text 2"),
-                             top_n = 50L){
+                             top_n = 50L,
+                             detailed = FALSE){
   
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop("ggplot2 is needed for this function to work. Install it via install.packages(\"ggplot2\")", 
@@ -66,10 +70,25 @@ get_shift_graphs <- function(x,
   # set main colours to supply totals. later check on how to show details.
   bar_colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
   
-  main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
-                                top_n = top_n,
-                                y_limits = y_limits,
-                                bar_colours = bar_colours$bar_colours_total)
+  
+  # check which main plot needs to be plotted
+  # adjust the height of the patchwork plot when detailed == TRUE
+  if(detailed == TRUE){
+    main_plot <- create_detailed_main_plot(top_shift_scores = top_shift_scores, 
+                                           top_n = top_n,
+                                           y_limits = y_limits,
+                                           all_pos_contributions = all_pos_contributions,
+                                           norm_value = x$norm_value)
+    heights <- c(2, 4, 4, 4)
+    
+  } else {
+    main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
+                                  top_n = top_n,
+                                  y_limits = y_limits,
+                                  bar_colours = bar_colours$bar_colours_total)
+    
+    heights <- c(1, 4, 4, 4)
+  }
   
   # calculate the totals for the total contributions plot
   totals <- get_shift_components(x$shift_scores, all_pos_contributions)
@@ -81,7 +100,7 @@ get_shift_graphs <- function(x,
                                                 norm_value = x$norm_value,
                                                 all_pos_contributions = all_pos_contributions,
                                                 y_limits = y_limits,
-                                                detailed = FALSE,
+                                                detailed = detailed,
                                                 show_total = show_total)
   
   cum_contribution_plot <- cumulative_contribution_plot(x, top_n)
@@ -100,7 +119,8 @@ get_shift_graphs <- function(x,
                 patchwork::area(3, 4),
                 patchwork::area(4, 4))
     
-    total_plot + main_plot + grob + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, heights = c(1, 4, 4, 4))
+    total_plot + main_plot + grob + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, 
+                                                                                                    heights = heights)
     
   } else {
     layout <- c(patchwork::area(1, 1, 1, 3),
@@ -108,7 +128,8 @@ get_shift_graphs <- function(x,
                 patchwork::area(3, 4),
                 patchwork::area(4, 4))
     
-    total_plot + main_plot + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, heights = c(1, 4, 4, 4))
+    total_plot + main_plot + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, 
+                                                                                             heights = heights)
   }
 }
 
@@ -138,7 +159,7 @@ create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours){
                                 limits = y_limits) + 
     ggplot2::scale_x_reverse(breaks = x_label_breaks) + 
     ggplot2::coord_flip() +
-    ggplot2::ylab(expression("Per type average score shift" ~ delta * s ["avg, r"] * "(%)")) +
+    ggplot2::ylab(expression("Score shift" ~ delta * Phi [tau] * "(%)")) +
     main_theme() 
   
   main_plot

@@ -4,7 +4,12 @@
 \alias{get_shift_graphs}
 \title{Generate a collection of shift graphs}
 \usage{
-get_shift_graphs(x, text_names = c("Text 1", "Text 2"), top_n = 50L)
+get_shift_graphs(
+  x,
+  text_names = c("Text 1", "Text 2"),
+  top_n = 50L,
+  detailed = FALSE
+)
 }
 \arguments{
 \item{x}{A shift object.}
@@ -12,6 +17,10 @@ get_shift_graphs(x, text_names = c("Text 1", "Text 2"), top_n = 50L)
 \item{text_names}{The names of the text to compare. Defaults to "Text 1" and "Text 2".}
 
 \item{top_n}{Integer value. Number of words to display in the main graph. Defaults to 50}
+
+\item{detailed}{Logical. Defaults to "FALSE". By default, the shifts display
+the overall contributions, rather than the detailed component contributions.
+By setting this value to "TRUE" the full details of the shifts are visualized.}
 }
 \value{
 Returns the plots of all the shift graphs.
