@@ -38,12 +38,12 @@ calculations, regardless if it may have a score in the other dictionary. If "ado
 and the score is missing in one dictionary, then uses the score from the other
 dictionary if it is available}
 
-\item{stop_lens}{Optional. Iterable of 2-tuples. Denotes intervals of scores
+\item{stop_lens}{Optional. A vector of 2 values. Denotes intervals of scores
 that should be excluded from word shifts calculations. Types with scores in
 this range will be excluded from word shift calculations. See details for
 more information.}
 
-\item{stop_words}{Optional. A string that contains words that should be excluded
+\item{stop_words}{Optional. A vector that contains words that should be excluded
 from word shifts calculations.}
 
 \item{normalization}{Optional. Default value: "variation". If 'variation', normalizes

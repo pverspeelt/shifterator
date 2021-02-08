@@ -104,3 +104,32 @@ get_bar_colours <- function(top_shift_scores, all_pos_contributions){
   pos_s_pos_p = "#FFFF80",
   pos_total = "#FECC5D",
   total = "#707070")
+
+# function to check input and rename or give error.
+# columns names should be c("word", "freq_1") or c("word", "freq_2")
+check_and_rename <- function(x, name_x, column_names){
+  
+  if(!is.data.frame(x)) {
+    message(sprintf("Please supply data.frames, not a %s", class(x)))
+    stop_quietly()
+  }
+  
+  if(length(class(x)) > 1 && any(class(x) %in% "data.frame")){
+    class(x) <- "data.frame"
+  } 
+  
+  if(length(names(x)) > 2){
+    message(sprintf("The data.frame used for %s contains too many columns. Input expects only 2 columns.", name_x), 
+            "\nThe first column containing the words, the second their frequencies or scores.")
+    stop_quietly()
+  }
+  
+  if(!is.character(x[[1]])) {
+    message(sprintf("The first column of the data in %s does not contain the expected words.", name_x))
+    stop_quietly()
+  }
+  
+  names(x) <- column_names
+  x
+}
+

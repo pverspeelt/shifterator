@@ -17,11 +17,11 @@
 #' calculations, regardless if it may have a score in the other dictionary. If "adopt" 
 #' and the score is missing in one dictionary, then uses the score from the other 
 #' dictionary if it is available
-#' @param stop_lens Optional. Iterable of 2-tuples. Denotes intervals of scores 
+#' @param stop_lens Optional. A vector of 2 values. Denotes intervals of scores 
 #' that should be excluded from word shifts calculations. Types with scores in 
 #' this range will be excluded from word shift calculations. See details for 
 #' more information.
-#' @param stop_words Optional. A string that contains words that should be excluded 
+#' @param stop_words Optional. A vector that contains words that should be excluded 
 #' from word shifts calculations.
 #' @param normalization Optional. Default value: "variation". If 'variation', normalizes
 #'  shift scores so that the sum of their absolute values sums to 1. If 'trajectory', 
@@ -51,29 +51,29 @@ shift <- function(type2freq_1,
   # get_score_dictionary not needed if a dictionary is supplied. 
   # dictionary should be gotten via textdata or a download.
   if(!is.null(type2score_1) & !is.null(type2score_2)) {
-    type2score_1 <- stats::setNames(type2score_1, c("word", "score_1"))
-    type2score_2 <- stats::setNames(type2score_2, c("word", "score_2"))
+    # type2score_1 <- stats::setNames(type2score_1, c("word", "score_1"))
+    # type2score_2 <- stats::setNames(type2score_2, c("word", "score_2"))
     if(!identical(type2score_1, type2score_2)) {
       show_score_diffs <- TRUE 
       } else {
         show_score_diffs <- FALSE 
       }
   } else if(!is.null(type2score_1) & is.null(type2score_2)) {
-      names(type2score_1) <- c("word", "score_1")
-      type2score_2 <- stats::setNames(type2score_1, c("word", "score_1"))
+      # names(type2score_1) <- c("word", "score_1")
+      type2score_2 <- stats::setNames(type2score_1, c("word", "score_2"))
       show_score_diffs <- FALSE
   } else if(is.null(type2score_1) & !is.null(type2score_2)) {
-      names(type2score_2) <- c("word", "score_2")
+      # names(type2score_2) <- c("word", "score_2")
       type2score_1 <- stats::setNames(type2score_2, c("word", "score_1"))
       show_score_diffs <- FALSE
   } else {
-      type2score_1 <- data.frame(word = type2freq_1$word, score_1 = 1)
-      type2score_2 <- data.frame(word = type2freq_2$word, score_2 = 1)
+      type2score_1 <- data.frame(word = type2freq_1$word, score_1 = 1, stringsAsFactors = FALSE)
+      type2score_2 <- data.frame(word = type2freq_2$word, score_2 = 1, stringsAsFactors = FALSE)
       show_score_diffs = FALSE
   }
   
   ## Preprocess words according to score rules, stop words, and stop lens
-  handle_missing_scores <- handle_missing_scores
+  # handle_missing_scores <- handle_missing_scores
   
   # test stop lens if it is not null. It should be a numeric vector of length 2 
   # with the first value lower thatn the second value

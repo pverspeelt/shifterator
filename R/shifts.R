@@ -17,9 +17,75 @@ weighted_avg_shift <- function(type2freq_1,
                              reference_value = NULL,
                              handle_missing_scores = "error",
                              stop_lens = NULL,
-                             stop_words = "",
+                             stop_words = NULL,
                              normalization = "variation"){
   
+  # check inputs
+  type2freq_1 <- check_and_rename(type2freq_1, 
+                                  name_x = "type2freq_1",
+                                  column_names = c("word", "freq_1"))
+  
+  type2freq_2 <- check_and_rename(type2freq_2, 
+                                  name_x = "type2freq_2",
+                                  column_names = c("word", "freq_2"))
+  
+  if(!is.null(type2score_1)){
+    type2score_1 <- check_and_rename(type2score_1, 
+                                     name_x = "type2score_1",
+                                     column_names = c("word", "score_1")) 
+  }
+  
+  if(!is.null(type2score_2)){
+    type2score_2 <- check_and_rename(type2score_2, 
+                                     name_x = "type2score_2",
+                                     column_names = c("word", "score_2")) 
+  }
+  
+  
+  if(length(handle_missing_scores) != 1){
+    message(sprintf("multiple values in handle_missing_scores: %s", paste0(handle_missing_scores, collapse = ", ")),
+            "\nUse one of the following options: 'error', 'exclude' or 'adopt'.")
+    stop_quietly()
+  }
+  
+  if(!handle_missing_scores %in% c("error", "exclude", "adopt")){
+    message(sprintf("Incorrect value for handle_missing_scores. You used: %s", handle_missing_scores),
+            "\nUse one of the following options: 'error', 'exclude' or 'adopt'.")
+    stop_quietly()
+  }
+  
+  if(!normalization %in% c("variation", "trajectory")){
+    message(sprintf("Incorrect value for normalization. You used: %s", normalization),
+            "\nUse one of the following options: 'variation' or 'trajectory'.")
+    stop_quietly()
+  }
+  
+  if(!is.null(reference_value)){
+    if(is.character(reference_value) && reference_value != "average"){
+      message(sprintf("Incorrect value for reference_value: %s", reference_value),
+              "\nUse a numeric value or use the value: 'average'. Check the help or vignette for more information.")
+      stop_quietly()
+    } 
+  }
+  
+  # check stop_lens
+  if(!is.null(stop_lens)){
+    if(length(stop_lens) != 2){
+      message("stop_lens needs to be a vector of 2 values with the first value lower than the second value.")
+    }
+    if((stop_lens[1] < stop_lens[2]) == FALSE) {
+      message("stop_lens needs to be a vector of 2 values with the first value lower than the second value.")
+    }
+  }
+  
+  if(!is.null(stop_words) && class(stop_words) != "character"){
+    message("stop_words needs to be a character vector.")
+    stop_quietly()
+  }
+  
+  
+  
+
   weighted_out <- shift(type2freq_1 = type2freq_1,
                         type2freq_2 = type2freq_2,
                         type2score_1 = type2score_1,
@@ -51,6 +117,15 @@ weighted_avg_shift <- function(type2freq_1,
 #' "Example to follow."
 proportion_shift <- function(type2freq_1, 
                              type2freq_2){
+  
+  # check inputs
+  type2freq_1 <- check_and_rename(type2freq_1, 
+                                  name_x = "type2freq_1",
+                                  column_names = c("word", "freq_1"))
+  
+  type2freq_2 <- check_and_rename(type2freq_2, 
+                                  name_x = "type2freq_2",
+                                  column_names = c("word", "freq_2"))
   
   
   # merge and split systems so that all words exist in both.
@@ -113,7 +188,40 @@ entropy_shift <- function(type2freq_1,
   
   ### add checks on base and alpha
   
-  ### add checks on type2freq_1 and type2freq_2 same checks in shift
+  # check inputs
+  type2freq_1 <- check_and_rename(type2freq_1, 
+                                  name_x = "type2freq_1",
+                                  column_names = c("word", "freq_1"))
+  
+  type2freq_2 <- check_and_rename(type2freq_2, 
+                                  name_x = "type2freq_2",
+                                  column_names = c("word", "freq_2"))
+  
+  if(!normalization %in% c("variation", "trajectory")){
+    message(sprintf("Incorrect value for normalization. You used: %s", normalization),
+            "\nUse one of the following options: 'variation' or 'trajectory'.")
+    stop_quietly()
+  }
+  
+  if(!is.numeric(base) || base < 0) {
+    message(sprintf("incorrect value for base: %s", base),
+            "\nUse a positive number.")
+    stop_quietly()
+  }
+  
+  if(!is.numeric(alpha)) {
+    message(sprintf("incorrect value for alpha: %s", alpha),
+            "\nUse a numeric value.")
+    stop_quietly()
+  }
+  
+  if(!is.null(reference_value)){
+    if(is.character(reference_value) && reference_value != "average"){
+      message(sprintf("Incorrect value for reference_value: %s", reference_value),
+              "\nUse a numeric value or use the value: 'average'. Check the help or vignette for more information.")
+      stop_quietly()
+    } 
+  }
   
   
   # get the relative frequencies
@@ -165,7 +273,34 @@ kldivergence_shift <- function(type2freq_1,
   
   ### add checks on base
   
-  ### add checks on type2freq_1 and type2freq_2 same checks in shift
+  # check inputs
+  type2freq_1 <- check_and_rename(type2freq_1, 
+                                  name_x = "type2freq_1",
+                                  column_names = c("word", "freq_1"))
+  
+  type2freq_2 <- check_and_rename(type2freq_2, 
+                                  name_x = "type2freq_2",
+                                  column_names = c("word", "freq_2"))
+  
+  if(!normalization %in% c("variation", "trajectory")){
+    message(sprintf("Incorrect value for normalization. You used: %s", normalization),
+            "\nUse one of the following options: 'variation' or 'trajectory'.")
+    stop_quietly()
+  }
+  
+  if(!is.numeric(base) || base < 0) {
+    message(sprintf("incorrect value for base: %s", base),
+            "\nUse a positive number.")
+    stop_quietly()
+  }
+  
+  if(!is.null(reference_value)){
+    if(is.character(reference_value) && reference_value != "average"){
+      message(sprintf("Incorrect value for reference_value: %s", reference_value),
+              "\nUse a numeric value or use the value: 'average'. Check the help or vignette for more information.")
+      stop_quietly()
+    } 
+  }
   
   symmetric_difference <- function(x, y){
     unique(c(setdiff(x, y), setdiff(y, x)))
@@ -227,10 +362,47 @@ jsdivergence_shift <- function(type2freq_1,
                                reference_value = 0,
                                normalization = "variation"){
   
-  # check that weigths sum to 1.  
-  if((weight_1 + weight_2) != 1){
-    stop(sprintf("weight_1 and weight_2 do not sum to 1. They sum to %s.", (weight_1 + weight_2)))
+  # check inputs
+  type2freq_1 <- check_and_rename(type2freq_1, 
+                                  name_x = "type2freq_1",
+                                  column_names = c("word", "freq_1"))
+  
+  type2freq_2 <- check_and_rename(type2freq_2, 
+                                  name_x = "type2freq_2",
+                                  column_names = c("word", "freq_2"))
+  
+  if(!normalization %in% c("variation", "trajectory")){
+    message(sprintf("Incorrect value for normalization. You used: %s", normalization),
+            "\nUse one of the following options: 'variation' or 'trajectory'.")
+    stop_quietly()
   }
+  
+  # check that weights sum to 1.  
+  if((weight_1 + weight_2) != 1){
+    message(sprintf("weight_1 and weight_2 do not sum to 1. They sum to %s.", (weight_1 + weight_2)))
+    stop_quietly()
+  }
+  
+  if(!is.numeric(base) || base < 0) {
+    message(sprintf("incorrect value for base: %s", base),
+            "\nUse a positive number.")
+    stop_quietly()
+  }
+  
+  if(!is.numeric(alpha)) {
+    message(sprintf("incorrect value for alpha: %s", alpha),
+            "\nUse a numeric value.")
+    stop_quietly()
+  }
+  
+  if(!is.null(reference_value)){
+    if(is.character(reference_value) && reference_value != "average"){
+      message(sprintf("Incorrect value for reference_value: %s", reference_value),
+              "\nUse a numeric value or use the value: 'average'. Check the help or vignette for more information.")
+      stop_quietly()
+    } 
+  }
+  
   
   # Get relative frequencies
   type2score_1 <- get_relative_frequency(type2freq_1)
