@@ -72,9 +72,10 @@ weighted_avg_shift <- function(type2freq_1,
   if(!is.null(stop_lens)){
     if(length(stop_lens) != 2){
       message("stop_lens needs to be a vector of 2 values with the first value lower than the second value.")
-    }
-    if((stop_lens[1] < stop_lens[2]) == FALSE) {
+      stop_quietly()
+    } else if((stop_lens[1] < stop_lens[2]) == FALSE) {
       message("stop_lens needs to be a vector of 2 values with the first value lower than the second value.")
+      stop_quietly()
     }
   }
   
@@ -380,6 +381,14 @@ jsdivergence_shift <- function(type2freq_1,
   # check that weights sum to 1.  
   if((weight_1 + weight_2) != 1){
     message(sprintf("weight_1 and weight_2 do not sum to 1. They sum to %s.", (weight_1 + weight_2)))
+    stop_quietly()
+  }
+  
+  # check that neither of the weights are 0 or negative.  
+  if(any(c(weight_1, weight_2) <= 0)){
+    message(sprintf("weight_1 and weight_2 can't be 0 or have a negative value. You used the values %s.", 
+                    paste(weight_1, weight_2, sep = " and "))
+            )
     stop_quietly()
   }
   
