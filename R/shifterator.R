@@ -134,6 +134,7 @@ shift <- function(type2freq_1,
                         words_in_stop_lens = preprocessed$words_in_stop_lens,
                         normalization = normalization,
                         norm_value = shift_scores_in$norm_value,
+                        difference = shift_scores_in$difference,
                         show_score_diffs = show_score_diffs,
                         shift_scores = shift_scores_in$shift_scores),
                    class = "shift"

@@ -65,6 +65,7 @@ get_shift_scores <- function(all_system_scores,
   type2_shift_scores$type2shift_score <- type2_shift_scores$type2shift_score / norm_value
   
   shift_scores_out <- list(shift_scores = type2_shift_scores,
+                           difference = total_diff,
                            norm_value = norm_value)
   
   shift_scores_out

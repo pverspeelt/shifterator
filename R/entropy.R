@@ -104,7 +104,7 @@ get_jsd_word_scores <- function(type2score_1,
                                  weight_1 * (log(all_scores$mixture, base) - log(all_scores$score_1, base)), 
                                  weight_1 * log(all_scores$mixture, base))
     all_scores$score_2 <- ifelse(all_scores$score_2 > 0, 
-                                 weight_2 * (log(all_scores$mixture, base) - log(all_scores$score_2, base)), 
+                                 weight_2 * (log(all_scores$score_2, base) - log(all_scores$mixture, base)), 
                                  weight_2 * log(all_scores$mixture, base))
   } else if(alpha > 0){
     all_scores$score_1 <- ifelse(all_scores$score_1 > 0, 
