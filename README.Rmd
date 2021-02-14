@@ -1,5 +1,6 @@
 ---
 output: github_document
+bibliography: article.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -41,5 +42,6 @@ This is a basic example which shows you how to solve a common problem:
 
 See the following paper for more details on word shifts, and please cite it if you use them in your work:
 
-    Gallagher, R. J., Frank, M. R., Mitchell, Lewis, Schwartz, A. J., Reagan, A. J., Danforth, C. M., Dodds, P. S.. (2020). Generalized Word Shift Graphs: A Method for Visualizing and Explaining Pairwise Comparisons Between Texts. arXiv preprint 2008.02250.
+[@Gallagher2021]
+
 
