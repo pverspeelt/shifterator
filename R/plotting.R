@@ -133,7 +133,7 @@ get_shift_graphs <- function(x,
   }
 }
 
-
+# main plot if detailed = FALSE
 create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours){
   
   # set main plotting params
@@ -167,7 +167,7 @@ create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours){
 }
 
 
-
+# text size plot
 create_text_size_plot <- function(x, text_names){
   
   n1 = sum(x$shift_scores$freq_1, na.rm = TRUE)
@@ -194,7 +194,7 @@ create_text_size_plot <- function(x, text_names){
 }
 
 
-
+# cumulative contribution plot
 cumulative_contribution_plot <- function(x, top_n){
   
   
@@ -217,7 +217,13 @@ cumulative_contribution_plot <- function(x, top_n){
     ggplot2::geom_vline(xintercept = top_n) + 
     ggplot2::theme_bw() + 
     ggplot2::theme(axis.title.x = ggplot2::element_blank()) +
-    ggplot2::ylab(y_label)
+    ggplot2::ylab(y_label) + 
+    ggplot2::ggtitle("Cumulative Contribution") + 
+    ggplot2::theme(plot.title = ggplot2::element_text(size = ggplot2::rel(0.9), 
+                                             hjust = 0.5,
+                                             lineheight = .9,
+                                             face = "bold.italic", 
+                                             colour = "black"))
   
   cum_contribution_plot
   
