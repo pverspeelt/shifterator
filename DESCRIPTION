@@ -24,7 +24,8 @@ Suggests:
     knitr,
     rmarkdown,
     quanteda,
-    dplyr
+    dplyr,
+    quanteda.textstats
 Imports: 
     ggplot2,
     scales,
