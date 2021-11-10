@@ -63,8 +63,6 @@ get_entropy_word_scores <- function(score,
   
   if(alpha == 1){
     score_new <- ifelse(score > 0, -log(score, base), 0)
-  } else if(alpha > 1){
-    score_new <- ifelse(score > 0, score^(alpha - 1) / (alpha - 1), 0)
   } else if(alpha > 0){
     score_new <- ifelse(score > 0, -score^(alpha - 1) / (alpha - 1), 0)
     } else {
