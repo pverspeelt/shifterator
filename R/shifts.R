@@ -272,8 +272,6 @@ kldivergence_shift <- function(type2freq_1,
                                reference_value = 0,
                                normalization = "variation"){
   
-  ### add checks on base
-  
   # check inputs
   type2freq_1 <- check_and_rename(type2freq_1, 
                                   name_x = "type2freq_1",
@@ -303,14 +301,10 @@ kldivergence_shift <- function(type2freq_1,
     } 
   }
   
-  symmetric_difference <- function(x, y){
-    unique(c(setdiff(x, y), setdiff(y, x)))
-  }
-  
-  if(length(symmetric_difference(type2freq_1$word, type2freq_2$word)) > 0){
-    message(cat("There are types that appear in either type2freq_1 or",
-            "\ntype2freq_2 but not the other: the KL divergence is not",
-            "well defined"))
+
+  if(sum(!type2freq_2$word %in% type2freq_1$word) > 0){
+    message(cat("There are types that appear in type2freq_2 but not type2freq_1:",
+                "\nthe KL divergence is not well-defined."))
     stop_quietly()
   }
   
@@ -321,8 +315,9 @@ kldivergence_shift <- function(type2freq_1,
   names(type2score_2) <- c("word", "score_2")
   
   # Get surprisal scores
-  type2score_1$score_1 <- type2score_1$score_1 * -1 * log(type2score_1$score_1, base)
-  type2score_2$score_2 <- type2score_1$score_1 * -1 * log(type2score_1$score_1, base)
+  entropy_scores <- get_entropy_scores(type2score_1, type2score_2, base)
+  type2score_1 <- entropy_scores[, c("word", "score_1")]
+  type2score_2 <- entropy_scores[, c("word", "score_2")]
   
   kld_out <- shift(type2freq_1 = type2freq_1,
                    type2freq_2 = type2freq_2,
