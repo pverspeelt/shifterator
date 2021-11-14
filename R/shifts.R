@@ -434,6 +434,9 @@ jsdivergence_shift <- function(type2freq_1,
                    reference_value = reference_value,
                    normalization = normalization) 
   
+  # needed for plotting. If TRUE the shift_scores are all positive.
+  # Plotting would be all positive values and checks on this value
+  # will shift values to negative for plotting purposes.
   if(alpha == 1 & reference_value == 0){
     jsd_out$all_pos_contributions <- TRUE
   } else {

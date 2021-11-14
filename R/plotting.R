@@ -70,7 +70,6 @@ get_shift_graphs <- function(x,
   # set main colours to supply totals. later check on how to show details.
   bar_colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
   
-  
   # check which main plot needs to be plotted
   # adjust the height of the patchwork plot when detailed == TRUE
   if(detailed == TRUE){
@@ -85,7 +84,8 @@ get_shift_graphs <- function(x,
     main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
                                   top_n = top_n,
                                   y_limits = y_limits,
-                                  bar_colours = bar_colours$bar_colours_total)
+                                  bar_colours = bar_colours$bar_colours_total,
+                                  all_pos_contributions = all_pos_contributions)
     
     heights <- c(1, 4, 4, 4)
   }
@@ -134,12 +134,18 @@ get_shift_graphs <- function(x,
 }
 
 # main plot if detailed = FALSE
-create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours){
+create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours, all_pos_contributions){
   
   # set main plotting params
+  if(all_pos_contributions == TRUE){
+    top_shift_scores$type2shift_score <- ifelse(top_shift_scores$type2p_diff <= 0,
+                                                -1 * top_shift_scores$type2shift_score,
+                                                top_shift_scores$type2shift_score)
+  }
+  
   # set hjust paramaters ("outward" is to close to the edge of the bars)
   shift_hj <- ifelse(top_shift_scores$type2shift_score >= 0, -0.2, 1.2)
-
+  
 
   # create x axis ordering, labels and breaks
   top_shift_scores$ordering <- 1:top_n

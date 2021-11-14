@@ -179,8 +179,8 @@ get_shift_components <- function(x, all_pos_contributions) {
   total <- sum(pos_s_pos_p, pos_s_neg_p, neg_s_pos_p, neg_s_neg_p, pos_s, neg_s)
   
   if(all_pos_contributions == TRUE){
-    all_pos_pos <- sum(ifelse(x$type2shift_score > 0, x$type2shift_score, 0))
-    all_pos_neg <- sum(ifelse(x$type2shift_score < 0, x$type2shift_score, 0))
+    all_pos_pos <- sum(ifelse(x$type2p_diff > 0, x$type2shift_score, 0))
+    all_pos_neg <- sum(ifelse(x$type2p_diff <= 0, -1 * x$type2shift_score, 0))
   } else {
     all_pos_pos <- 0
     all_pos_neg <- 0
