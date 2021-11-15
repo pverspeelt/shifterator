@@ -75,7 +75,6 @@ get_shift_graphs <- function(x,
   if(detailed == TRUE){
     main_plot <- create_detailed_main_plot(top_shift_scores = top_shift_scores, 
                                            top_n = top_n,
-                                           y_limits = y_limits,
                                            all_pos_contributions = all_pos_contributions,
                                            norm_value = x$norm_value)
     heights <- c(2, 4, 4, 4)

@@ -1,10 +1,14 @@
 create_detailed_main_plot <- function(top_shift_scores, 
                                       top_n, 
-                                      y_limits, 
                                       all_pos_contributions,
                                       norm_value){
   
   bar_dimensions <-  bar_dimension(top_shift_scores, norm_value, all_pos_contributions)
+  
+  
+  # set scale limits for main and total plots
+  y_limits <- c(-max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) - 0.005, 
+                max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) + 0.005)
   
   # get the bar colours and add them to the bar_dimensions
   colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
@@ -36,7 +40,7 @@ create_detailed_main_plot <- function(top_shift_scores,
   bars$alpha_fade <- ifelse(bars$bar %in% c("bar_colours_p_solid", "bar_colours_s_solid"), 
                             1, 
                             .35)
-  
+
   ## create plot. 
   # hjust is outward instead of calculation. 
   # label_heights defines location where the labels are placed.
