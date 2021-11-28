@@ -31,7 +31,7 @@ create_total_contributions_plot <- function(top_shift_scores,
   # create a function of this and put it outside of the create? 
   # or use the create as 
   value <- numeric(0L)
-  for(b in bar_order){
+  for(b in bar_order$bar_order){
     if(b == "total"){
       value[b] <- totals[[b]]
       next
@@ -61,18 +61,19 @@ create_total_contributions_plot <- function(top_shift_scores,
   value <- value * rescale_factor
   
   # data frame for ggplot.
-  plotting_data <- data.frame(labels = factor(unlist(shift_labels[bar_order]), 
-                                              levels = (unlist(shift_labels[bar_order]))), 
+  plotting_data <- data.frame(labels = factor(unlist(shift_labels[bar_order$bar_order]), 
+                                              levels = (unlist(shift_labels[bar_order$bar_order]))),
+                              x_label = bar_order$x_label,
                               value)
   
   # get the colours for the plot
-  colour <- .score_colours[bar_order] 
+  colour <- .score_colours[bar_order$bar_order] 
   
   # build title
   title <- sprintf("Shift of %s vs %s", text_names[1], text_names[2])
   
   ggplot2::ggplot(plotting_data, 
-                  ggplot2::aes(x = labels , y = value)) +
+                  ggplot2::aes(x = x_label , y = value)) +
     ggplot2::geom_bar(stat = "identity", fill = colour) +
     ggplot2::geom_text(ggplot2::aes(label = labels), size = 3, hjust = c("outward")) + 
     ggplot2::scale_y_continuous(label = scales::percent, limits = y_limits) +
@@ -93,7 +94,9 @@ create_total_contributions_plot <- function(top_shift_scores,
 
 # Gets which cumulative bars to show at the top of the graph given what level
 # of detail is being specified
-# returns a vector of strings indicating which cumulative bars to show.
+# Returns a data.frame of strings indicating which cumulative bars to show and
+# the labels for the x-axis so that are each others opposite will be plotted on 
+# the same bar.
 get_bar_order <- function(show_score_diffs, 
                           all_pos_contributions,
                           detailed = FALSE, 
@@ -107,20 +110,25 @@ get_bar_order <- function(show_score_diffs,
                      "neg_s_pos_p",
                      "pos_s_neg_p",
                      "pos_s_pos_p")
+      x_label <- c(2,2,3,3,4,4)
     } else {
       bar_order <- c("neg_s_neg_p", "neg_s_pos_p", "pos_s_neg_p", "pos_s_pos_p")
+      x_label <- c(2,2,3,3)
     }
   } else if(!all_pos_contributions == TRUE) {
     bar_order <- c("neg_total", "pos_total")
+    x_label <- c(2,2)
   } else {
     bar_order <- c("all_pos_pos", "all_pos_neg")
+    x_label <- c(2,2)
   } 
   
   if(show_total == TRUE){
     bar_order = c("total", bar_order)
+    x_label <- c(1, x_label)
   }
   
-  bar_order  
+  out <- data.frame(bar_order, x_label)
 }
 
 

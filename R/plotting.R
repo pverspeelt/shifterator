@@ -63,23 +63,32 @@ get_shift_graphs <- function(x,
                                                        decreasing = TRUE) , , drop = FALSE], 
                                   top_n)
   
-  # set scale limits for main and total plots
-  y_limits <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
-                   max(abs(top_shift_scores$type2shift_score)) + 0.005)
-  
   # set main colours to supply totals. later check on how to show details.
   bar_colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
   
   # check which main plot needs to be plotted
   # adjust the height of the patchwork plot when detailed == TRUE
   if(detailed == TRUE){
+    
+    bar_dimensions <-  bar_dimension(top_shift_scores, x$norm_value, all_pos_contributions)
+
+    # set scale limits for main and total plots
+    y_limits <- c(-max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) - 0.005, 
+                  max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) + 0.005)
+    
     main_plot <- create_detailed_main_plot(top_shift_scores = top_shift_scores, 
                                            top_n = top_n,
                                            all_pos_contributions = all_pos_contributions,
-                                           norm_value = x$norm_value)
+                                           bar_dimensions = bar_dimensions,
+                                           y_limits = y_limits)
+    
     heights <- c(2, 4, 4, 4)
     
   } else {
+    # set scale limits for main and total plots
+    y_limits <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
+                  max(abs(top_shift_scores$type2shift_score)) + 0.005)
+    
     main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
                                   top_n = top_n,
                                   y_limits = y_limits,

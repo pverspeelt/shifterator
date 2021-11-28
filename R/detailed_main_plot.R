@@ -1,14 +1,8 @@
 create_detailed_main_plot <- function(top_shift_scores, 
                                       top_n, 
                                       all_pos_contributions,
-                                      norm_value){
-  
-  bar_dimensions <-  bar_dimension(top_shift_scores, norm_value, all_pos_contributions)
-  
-  
-  # set scale limits for main and total plots
-  y_limits <- c(-max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) - 0.005, 
-                max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) + 0.005)
+                                      bar_dimensions,
+                                      y_limits){
   
   # get the bar colours and add them to the bar_dimensions
   colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
