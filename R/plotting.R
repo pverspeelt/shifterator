@@ -72,26 +72,17 @@ get_shift_graphs <- function(x,
     
     bar_dimensions <-  bar_dimension(top_shift_scores, x$norm_value, all_pos_contributions)
 
-    # set scale limits for main and total plots
-    y_limits <- c(-max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) - 0.005, 
-                  max(abs(bar_dimensions$p_solid_heights + bar_dimensions$p_fade_heights)) + 0.005)
-    
     main_plot <- create_detailed_main_plot(top_shift_scores = top_shift_scores, 
                                            top_n = top_n,
                                            all_pos_contributions = all_pos_contributions,
-                                           bar_dimensions = bar_dimensions,
-                                           y_limits = y_limits)
+                                           bar_dimensions = bar_dimensions)
     
     heights <- c(2, 4, 4, 4)
     
   } else {
-    # set scale limits for main and total plots
-    y_limits <- c(-max(abs(top_shift_scores$type2shift_score)) - 0.005, 
-                  max(abs(top_shift_scores$type2shift_score)) + 0.005)
-    
+
     main_plot <- create_main_plot(top_shift_scores = top_shift_scores, 
                                   top_n = top_n,
-                                  y_limits = y_limits,
                                   bar_colours = bar_colours$bar_colours_total,
                                   all_pos_contributions = all_pos_contributions)
     
@@ -107,42 +98,60 @@ get_shift_graphs <- function(x,
                                                 text_names = text_names,
                                                 norm_value = x$norm_value,
                                                 all_pos_contributions = all_pos_contributions,
-                                                y_limits = y_limits,
                                                 detailed = detailed,
                                                 show_total = show_total)
   
+  # inset plots
   cum_contribution_plot <- cumulative_contribution_plot(x, top_n)
   text_size_plot <- create_text_size_plot(x, text_names)
   
-  # Plotting area
+  # add correct title to total
   if(exists("avg_score", where = x)){
-    grob_text <- bquote(atop(.(text_names[1])*":" ~ Phi[avg] ~" = " ~  .(round(x$avg_score[[1]], 2)),
+    total_plot_title <- bquote(atop(.(text_names[1])*":" ~ Phi[avg] ~" = " ~  .(round(x$avg_score[[1]], 2)),
                              .(text_names[2])*":" ~ Phi[avg] ~" = " ~  .(round(x$avg_score[[2]], 2))))
     
-    grob <- grid::textGrob(grob_text)
-    
-    layout <- c(patchwork::area(1, 1, 1, 3),
-                patchwork::area(2, 1, 4, 3),
-                patchwork::area(2, 4),
-                patchwork::area(3, 4),
-                patchwork::area(4, 4))
-    
-    total_plot + main_plot + grob + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, 
-                                                                                                    heights = heights)
-    
   } else {
-    layout <- c(patchwork::area(1, 1, 1, 3),
-                patchwork::area(2, 1, 4, 3),
-                patchwork::area(3, 4),
-                patchwork::area(4, 4))
-    
-    total_plot + main_plot + cum_contribution_plot + text_size_plot + patchwork::plot_layout(design = layout, 
-                                                                                             heights = heights)
+
+    total_plot_title <- sprintf("Shift of %s vs %s", text_names[1], text_names[2])
   }
+  
+  total_plot <- total_plot + ggplot2::ggtitle(total_plot_title)
+  
+  
+  # patchwork parts
+  # syncs ylims over total and main plots
+  # puts insets on combined plot
+  layout <- c(patchwork::area(1, 1, 1, 3),
+              patchwork::area(2, 1, 4, 3))
+  
+  combined_plot <- total_plot + main_plot + patchwork::plot_layout(design = layout, heights = heights)
+  
+  plot_ranges_y <- c(ggplot2::ggplot_build(combined_plot[[1]])$layout$panel_scales_y[[1]]$range$range,
+                     ggplot2::ggplot_build(combined_plot[[2]])$layout$panel_scales_y[[1]]$range$range)
+  
+  combined_plot <- combined_plot & 
+    ggplot2::scale_y_continuous(label = scales::percent, 
+                                limits = c(min(plot_ranges_y), max(plot_ranges_y)))
+  
+  combined_plot + 
+    inset_element(cum_contribution_plot, 
+                  left = 0.01, 
+                  bottom = 0.05, 
+                  right = 0.3, 
+                  top = 0.35 
+    ) +
+    inset_element(text_size_plot, 
+                  left = 0.8, 
+                  bottom = 0.05, 
+                  right = 0.975,
+                  top = 0.25
+    ) 
+  
+
 }
 
 # main plot if detailed = FALSE
-create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours, all_pos_contributions){
+create_main_plot <- function(top_shift_scores, top_n, bar_colours, all_pos_contributions){
   
   # set main plotting params
   if(all_pos_contributions == TRUE){
@@ -169,8 +178,6 @@ create_main_plot <- function(top_shift_scores, top_n, y_limits, bar_colours, all
     ggplot2::geom_text(ggplot2::aes(label = .data$word), 
                        size = 3, 
                        hjust = shift_hj) + 
-    ggplot2::scale_y_continuous(labels = scales::percent, 
-                                limits = y_limits) + 
     ggplot2::scale_x_reverse(breaks = x_label_breaks) + 
     ggplot2::coord_flip() +
     ggplot2::ylab(expression("Score shift" ~ delta * Phi [tau] * "(%)")) +

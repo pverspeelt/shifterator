@@ -1,8 +1,7 @@
 create_detailed_main_plot <- function(top_shift_scores, 
                                       top_n, 
                                       all_pos_contributions,
-                                      bar_dimensions,
-                                      y_limits){
+                                      bar_dimensions){
   
   # get the bar colours and add them to the bar_dimensions
   colours <- get_bar_colours(top_shift_scores, all_pos_contributions)
@@ -43,7 +42,6 @@ create_detailed_main_plot <- function(top_shift_scores,
                                                      y = .data$heights)) +
     ggplot2::geom_col(fill = scales::alpha(bars$colour, bars$alpha_fade)) +
     ggplot2::scale_x_reverse(breaks = x_label_breaks) +
-    ggplot2::scale_y_continuous(labels = scales::percent, limits = y_limits) +
     ggplot2::annotate(geom = "text", 
                       x = bar_dimensions$ordering, 
                       y = bar_dimensions$label_heights, 

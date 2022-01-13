@@ -4,7 +4,6 @@ create_total_contributions_plot <- function(top_shift_scores,
                                             totals,
                                             text_names,
                                             norm_value,
-                                            y_limits,
                                             show_score_diffs,
                                             all_pos_contributions,
                                             detailed = FALSE, 
@@ -72,11 +71,11 @@ create_total_contributions_plot <- function(top_shift_scores,
   # build title
   title <- sprintf("Shift of %s vs %s", text_names[1], text_names[2])
   
-  ggplot2::ggplot(plotting_data, 
-                  ggplot2::aes(x = x_label , y = value)) +
+  total_contributions_plot <- ggplot2::ggplot(plotting_data, 
+                                              ggplot2::aes(x = .data$x_label , 
+                                                           y = .data$value)) +
     ggplot2::geom_bar(stat = "identity", fill = colour) +
     ggplot2::geom_text(ggplot2::aes(label = labels), size = 3, hjust = c("outward")) + 
-    ggplot2::scale_y_continuous(label = scales::percent, limits = y_limits) +
     ggplot2::coord_flip() +
     main_theme() + 
     ggplot2::theme(axis.text.y = ggplot2::element_blank(),
@@ -85,9 +84,9 @@ create_total_contributions_plot <- function(top_shift_scores,
                    axis.title.x = ggplot2::element_blank(),
                    panel.grid.major.y = ggplot2::element_line(color = NA),
                    plot.title = ggplot2::element_text(size = ggplot2::rel(1), 
-                                                      hjust = 0.5)) +
-    ggplot2::ggtitle(title)
+                                                      hjust = 0.5)) 
   
+  total_contributions_plot
 
 }
 
