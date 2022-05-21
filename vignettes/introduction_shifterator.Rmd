@@ -1,41 +1,22 @@
 ---
-output: github_document
-bibliography: article.bib
+title: "Introduction to shifterator"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to shifterator}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  comment = "#>"
 )
 ```
 
-# shifterator
-
-<!-- badges: start -->
-
-[![R-CMD-check](https://github.com/pverspeelt/shifterator/workflows/R-CMD-check/badge.svg)](https://github.com/pverspeelt/shifterator/actions)
-
-<!-- badges: end -->
-
-The Shifterator package provides functionality for constructing word shift graphs, vertical bart charts that quantify which words contribute to a pairwise difference between two texts and how they contribute. By allowing you to look at changes in how words are used, word shifts help you to conduct analyses of sentiment, entropy, and divergence that are fundamentally more interpretable.
-
-## Installation
-
-You can install the development version from [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("devtools")
-devtools::install_github("pverspeelt/shifterator")
-```
-
-## Introduction to shifterator
-
-**shifterator** is a port from the python shifterator package for visualizing pairwise comparisons between texts. For detailed information about the formulas used to calculate the shifts, you can have a look at the [python cookbook](<https://shifterator.readthedocs.io/en/latest/cookbook/index.html>).
+**shifterator** is a port from the python shifterator package for visualizing pairwise comparisons between texts. For detailed information about the formulas used to calculate the shifts, you can have a look at the [python cookbook](https://shifterator.readthedocs.io/en/latest/cookbook/index.html).
 
 I'm going to have a look at the Animal Crossing review dataset that was used on a #TidyTuesday episode by Julia Silge. Here is a [link](https://juliasilge.com/blog/animal-crossing/) to the blog post. This dataset will be used to give a quick overview of how to prepare data to be used with the shifterator functions and how to plot the outcome of the word shift graphs.
 
@@ -43,13 +24,12 @@ So let's load the data and have a quick look at the grade distribution.
 
 ```{r message=FALSE}
 library(dplyr)
-library(readr)
 library(stringr)
 library(tidytext)
 library(ggplot2)
 library(shifterator)
 
-user_reviews <- read_tsv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-05/user_reviews.tsv")
+data("user_reviews")
 
 user_reviews %>%
   count(grade) %>%
@@ -89,7 +69,7 @@ cleaned_positive_reviews = positive_reviews %>%
 
 After the creation of the frequency tables, a quick look at the top 15 words that appear in the positive and negative reviews.
 
-```{r graphs, message=FALSE}
+```{r graphs, message=FALSE, fig.width=6}
 library(patchwork)  
 p_neg <- cleaned_negative_reviews %>% 
   top_n(15) %>% 
@@ -110,7 +90,7 @@ p_neg + p_pos
 
 Looking at the graphs, you can see that "*game*" and "*island*" are the top words in both. The word "*fun*" and the number *10* in the positive reviews is to be expected. But the top words in the negative reviews leave a lot of guessing why they are there. This is where shifterator comes into play. The calculations of the words between the texts and how often they appear give a weight to them. The several word shift calculations available in shifterator can help to distinguish which words are more important in one text or in the other.
 
-```{r entropy, fig.height=8}
+```{r entropy, fig.height=8, fig.width=7}
 entropy <- entropy_shift(cleaned_positive_reviews, cleaned_negative_reviews)
 get_shift_graphs(entropy, text_names = c("positive", "negative"))
 ```
@@ -121,4 +101,4 @@ The shift graph shows the words in a more interesting way. Now you can see which
 
 Read the following paper for more details on word shifts, and please cite it if you use them in your work:
 
-[@Gallagher2021]
+[@gallagher2021]

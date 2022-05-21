@@ -6,10 +6,23 @@
 \alias{shifterator-package}
 \title{shifterator: Functionality for Constructing Word Shift Graphs}
 \description{
-What the package does (one paragraph).
+The shifterator package provides functionality for constructing word shift graphs, horizontal bart charts that quantify which words contribute to a pairwise difference between two texts and how they contribute. By allowing you to look at changes in how words are used, word shifts help you to conduct analyses of sentiment, entropy, and divergence that are fundamentally more interpretable.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/pverspeelt/shifterator}
+  \item Report bugs at \url{https://github.com/pverspeelt/shifterator/issues}
+}
+
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Philippe Verspeelt \email{phiver4@gmail.com}
+
+Authors:
+\itemize{
+  \item Ryan Gallagher \email{gallagher.r@northeastern.edu}
+}
 
 }
 \keyword{internal}
