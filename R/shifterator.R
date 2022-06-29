@@ -8,9 +8,9 @@
 #' @param type2score_2 Optional. A lexicon containing 2 columns. The first column the words and the second column the word score.
 #' @param reference_value Optional. String or numeric. The reference score to use 
 #' to partition scores into two different regimes. If 'average', uses the average 
-#' score according to type2freq_1 and type2score_1. If None and a lexicon is 
-#' selected for type2score, uses the respective middle point in that lexicon's scale. 
-#' Otherwise if NULL, uses zero as the reference point.
+#' score according to type2freq_1 and type2score_1. If a lexicon is used for type2score, 
+#' you need to use the middle point of that lexicon's scale. If no value is supplied, 
+#' zero will be used as the reference point. See details for more information.
 #' @param handle_missing_scores Optional. Default value: "error". If "error", throws an error 
 #' whenever a word has a score in one score dictionary but not the other. If "exclude", 
 #' excludes any word that is missing a score in one score dictionary from all word shift

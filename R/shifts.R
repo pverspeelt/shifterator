@@ -1,15 +1,49 @@
 #' Weighted Average Shift
 #' 
 #' Shift object for calculating weighted scores of two systems of types, and the shift between them.
+#' 
+#' @details 
+#' \strong{reference_value:}
+#' When a lexicon is used for type2score, you have to supply the middle point of 
+#' the lexicon's scale. If the scale is from 1 to 9, the middle point you should use is 5.
+#' If no reference value is given, a value of 0 will be used. This might skew the results when 
+#' calculating the shift scores.
+#' 
+#' \strong{stop_lens:}
+#' Stop_lens can be used to remove words that fall within a range from the shift score calculations.
+#' This should be used in combination supplying a lexicon. If the scale of the lexicon is from one to 
+#' nine, you can, for example, remove the words that would have a score between 4 and 6 by supplying
+#' a vector of \code{c(4, 6)}. 
+#' 
 #'
 #' @inheritParams shift
 #'
 #' @return Returns a list object of class shift.
 #' @family shifts
 #' @export
-#'
 #' @examples 
-#' "Example to follow."
+#' #' library(shifterator)
+#' library(quanteda)
+#' library(quanteda.textstats)
+#' library(dplyr)
+#' 
+#' reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") %>% 
+#'   tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% # to move from classes frequency, textstat, and data.frame to data.frame
+#' select(feature, frequency) 
+#' 
+#' bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") %>% 
+#' tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% 
+#' select(feature, frequency)
+#' 
+#' was <- weighted_avg_shift(reagan, bush)
+#' 
+
 weighted_avg_shift <- function(type2freq_1,
                              type2freq_2,
                              type2score_1 = NULL,
@@ -115,7 +149,27 @@ weighted_avg_shift <- function(type2freq_1,
 #' @export
 #'
 #' @examples
-#' "Example to follow."
+#' #' library(shifterator)
+#' library(quanteda)
+#' library(quanteda.textstats)
+#' library(dplyr)
+#' 
+#' reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") %>% 
+#'   tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% # to move from classes frequency, textstat, and data.frame to data.frame
+#' select(feature, frequency) 
+#' 
+#' bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") %>% 
+#' tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% 
+#' select(feature, frequency)
+#' 
+#' prop <- proportion_shift(reagan, bush)
+
 proportion_shift <- function(type2freq_1, 
                              type2freq_2){
   
@@ -179,7 +233,27 @@ proportion_shift <- function(type2freq_1,
 #' @export
 #'
 #' @examples
-#' "example to follow"
+#' library(shifterator)
+#' library(quanteda)
+#' library(quanteda.textstats)
+#' library(dplyr)
+#' 
+#' reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") %>% 
+#'   tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% # to move from classes frequency, textstat, and data.frame to data.frame
+#' select(feature, frequency) 
+#' 
+#' bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") %>% 
+#' tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% 
+#' select(feature, frequency)
+#' 
+#' entropy <- entropy_shift(reagan, bush)
+
 entropy_shift <- function(type2freq_1,
                           type2freq_2,
                           base = 2L,
@@ -265,7 +339,27 @@ entropy_shift <- function(type2freq_1,
 #' @export
 #' 
 #' @examples
-#' "Example to follow"
+#' library(shifterator)
+#' library(quanteda)
+#' library(quanteda.textstats)
+#' library(dplyr)
+#' 
+#' reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") %>% 
+#'   tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% # to move from classes frequency, textstat, and data.frame to data.frame
+#' select(feature, frequency) 
+#' 
+#' bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") %>% 
+#' tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% 
+#' select(feature, frequency)
+#' 
+#' kld <- kldivergence_shift(reagan, bush)
+
 kldivergence_shift <- function(type2freq_1,
                                type2freq_2,
                                base = 2L,
@@ -348,7 +442,26 @@ kldivergence_shift <- function(type2freq_1,
 #' @export
 #'
 #' @examples
-#' "Example to follow"
+#' library(shifterator)
+#' library(quanteda)
+#' library(quanteda.textstats)
+#' library(dplyr)
+#' 
+#' reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") %>% 
+#'   tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% # to move from classes frequency, textstat, and data.frame to data.frame
+#' select(feature, frequency) 
+#' 
+#' bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") %>% 
+#' tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% 
+#' select(feature, frequency)
+#' 
+#' jsd <- jsdivergence_shift(reagan, bush)
 jsdivergence_shift <- function(type2freq_1,
                                type2freq_2,
                                weight_1 = 0.5,

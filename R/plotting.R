@@ -13,7 +13,31 @@
 #' @export
 #'
 #' @examples
-#' "example to follow"
+#' \dontrun{
+#' library(shifterator)
+#' library(quanteda)
+#' library(quanteda.textstats)
+#' library(dplyr)
+#' 
+#' reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") %>% 
+#'   tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% # to move from classes frequency, textstat, and data.frame to data.frame
+#' select(feature, frequency) 
+#' 
+#' bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") %>% 
+#' tokens(remove_punct = TRUE) %>% 
+#' dfm() %>% 
+#' textstat_frequency() %>% 
+#' as.data.frame() %>% 
+#' select(feature, frequency)
+#' 
+#' prop <- proportion_shift(reagan, bush)
+#' 
+#' # plot the proportion shift graph
+#' get_shift_graphs(prop_shift, text_names = c("reagan", "bush"))
+#' }
 get_shift_graphs <- function(x, 
                              text_names = c("Text 1", "Text 2"),
                              top_n = 50L,

@@ -18,7 +18,26 @@ Returns a list object of class shift.
 Shift object for calculating differences in proportions of types across two systems.
 }
 \examples{
-"Example to follow."
+#' library(shifterator)
+library(quanteda)
+library(quanteda.textstats)
+library(dplyr)
+
+reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") \%>\% 
+  tokens(remove_punct = TRUE) \%>\% 
+dfm() \%>\% 
+textstat_frequency() \%>\% 
+as.data.frame() \%>\% # to move from classes frequency, textstat, and data.frame to data.frame
+select(feature, frequency) 
+
+bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") \%>\% 
+tokens(remove_punct = TRUE) \%>\% 
+dfm() \%>\% 
+textstat_frequency() \%>\% 
+as.data.frame() \%>\% 
+select(feature, frequency)
+
+prop <- proportion_shift(reagan, bush)
 }
 \seealso{
 Other shifts: 

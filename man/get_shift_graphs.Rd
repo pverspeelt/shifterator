@@ -29,5 +29,29 @@ Returns the plots of all the shift graphs.
 When called this will construct word shift graphs.
 }
 \examples{
-"example to follow"
+\dontrun{
+library(shifterator)
+library(quanteda)
+library(quanteda.textstats)
+library(dplyr)
+
+reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") \%>\% 
+  tokens(remove_punct = TRUE) \%>\% 
+dfm() \%>\% 
+textstat_frequency() \%>\% 
+as.data.frame() \%>\% # to move from classes frequency, textstat, and data.frame to data.frame
+select(feature, frequency) 
+
+bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") \%>\% 
+tokens(remove_punct = TRUE) \%>\% 
+dfm() \%>\% 
+textstat_frequency() \%>\% 
+as.data.frame() \%>\% 
+select(feature, frequency)
+
+prop <- proportion_shift(reagan, bush)
+
+# plot the proportion shift graph
+get_shift_graphs(prop_shift, text_names = c("reagan", "bush"))
+}
 }

@@ -27,9 +27,9 @@ weighted_avg_shift(
 
 \item{reference_value}{Optional. String or numeric. The reference score to use
 to partition scores into two different regimes. If 'average', uses the average
-score according to type2freq_1 and type2score_1. If None and a lexicon is
-selected for type2score, uses the respective middle point in that lexicon's scale.
-Otherwise if NULL, uses zero as the reference point.}
+score according to type2freq_1 and type2score_1. If a lexicon is used for type2score,
+you need to use the middle point of that lexicon's scale. If no value is supplied,
+zero will be used as the reference point. See details for more information.}
 
 \item{handle_missing_scores}{Optional. Default value: "error". If "error", throws an error
 whenever a word has a score in one score dictionary but not the other. If "exclude",
@@ -58,8 +58,41 @@ Returns a list object of class shift.
 \description{
 Shift object for calculating weighted scores of two systems of types, and the shift between them.
 }
+\details{
+\strong{reference_value:}
+When a lexicon is used for type2score, you have to supply the middle point of
+the lexicon's scale. If the scale is from 1 to 9, the middle point you should use is 5.
+If no reference value is given, a value of 0 will be used. This might skew the results when
+calculating the shift scores.
+
+\strong{stop_lens:}
+Stop_lens can be used to remove words that fall within a range from the shift score calculations.
+This should be used in combination supplying a lexicon. If the scale of the lexicon is from one to
+nine, you can, for example, remove the words that would have a score between 4 and 6 by supplying
+a vector of \code{c(4, 6)}.
+}
 \examples{
-"Example to follow."
+#' library(shifterator)
+library(quanteda)
+library(quanteda.textstats)
+library(dplyr)
+
+reagan <- corpus_subset(data_corpus_inaugural, President == "Reagan") \%>\% 
+  tokens(remove_punct = TRUE) \%>\% 
+dfm() \%>\% 
+textstat_frequency() \%>\% 
+as.data.frame() \%>\% # to move from classes frequency, textstat, and data.frame to data.frame
+select(feature, frequency) 
+
+bush <- corpus_subset(data_corpus_inaugural, President == "Bush" & FirstName == "George W.") \%>\% 
+tokens(remove_punct = TRUE) \%>\% 
+dfm() \%>\% 
+textstat_frequency() \%>\% 
+as.data.frame() \%>\% 
+select(feature, frequency)
+
+was <- weighted_avg_shift(reagan, bush)
+
 }
 \seealso{
 Other shifts: 
