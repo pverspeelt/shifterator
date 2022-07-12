@@ -2,15 +2,10 @@ Package: shifterator
 Title: Functionality for Constructing Word Shift Graphs
 Version: 0.1.0
 Authors@R: 
-    c(person(given = "Philippe",
+    person(given = "Philippe",
            family = "Verspeelt",
            role = c("aut", "cre"),
-           email = "phiver4@gmail.com"),
-      person(given = "Ryan",
-           family = "Gallagher",
-           role = c("aut"),
-           email = "gallagher.r@northeastern.edu")
-         )
+           email = "phiver4@gmail.com")
 Description: The shifterator package provides functionality for constructing word shift graphs, horizontal bart charts that quantify which words contribute to a pairwise difference between two texts and how they contribute. By allowing you to look at changes in how words are used, word shifts help you to conduct analyses of sentiment, entropy, and divergence that are fundamentally more interpretable.
 License: MIT + file LICENSE
 Encoding: UTF-8

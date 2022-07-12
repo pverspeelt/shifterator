@@ -17,6 +17,19 @@ Returns a list object of class shift.
 \description{
 Shift object for calculating differences in proportions of types across two systems.
 }
+\details{
+The easiest word shift graph that we can construct is a proportion
+shift. If \eqn{p_i^{(1)}} is the relative frequency of word \emph{i} in the first
+text, and \eqn{p_i^{(2)}} is its relative frequency in the second text, then
+the proportion shift calculates their difference:
+
+\strong{\eqn{\delta p_i = p_i^{(2)} - p_i^{(1)}}}
+
+If the difference is positive (\eqn{\delta p_i > 0}), then the word is
+relatively more common in the second text. If it is negative (\eqn{\delta p_i < 0}),
+then it is relatively more common in the first text. We can rank words by
+this difference and plot them as a word shift graph.
+}
 \examples{
 #' library(shifterator)
 library(quanteda)

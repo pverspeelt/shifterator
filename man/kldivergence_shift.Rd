@@ -35,9 +35,18 @@ left unnormalized if the total is 0 and 'trajectory' is specified.}
 Returns a list object of class shift.
 }
 \description{
-Shift object for calculating the Kullback-Leibler divergence (KLD) between two systems
+Shift object for calculating the Kullback-Leibler divergence (KLD) between two systems.
+}
+\details{
+The Kullback-Leibler divergence (KLD) is a useful asymmetric measure of
+how two texts differ. One text is the reference text and the other is
+the comparison text.
+
+The KLD is only well-defined if every single word in the comparison text
+is also in the reference text. If this is not the case KLD diverges to infinity.
 }
 \examples{
+\dontrun{
 library(shifterator)
 library(quanteda)
 library(quanteda.textstats)
@@ -57,7 +66,9 @@ textstat_frequency() \%>\%
 as.data.frame() \%>\% 
 select(feature, frequency)
 
+# This will return the message that the KL divergence is not well-defined.
 kld <- kldivergence_shift(reagan, bush)
+}
 }
 \seealso{
 Other shifts: 

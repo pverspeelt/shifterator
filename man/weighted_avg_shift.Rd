@@ -91,7 +91,7 @@ textstat_frequency() \%>\%
 as.data.frame() \%>\% 
 select(feature, frequency)
 
-was <- weighted_avg_shift(reagan, bush)
+was <- weighted_avg_shift(reagan, bush, handle_missing_scores = "exclude")
 
 }
 \seealso{

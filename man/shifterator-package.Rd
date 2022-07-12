@@ -19,10 +19,5 @@ Useful links:
 \author{
 \strong{Maintainer}: Philippe Verspeelt \email{phiver4@gmail.com}
 
-Authors:
-\itemize{
-  \item Ryan Gallagher \email{gallagher.r@northeastern.edu}
-}
-
 }
 \keyword{internal}

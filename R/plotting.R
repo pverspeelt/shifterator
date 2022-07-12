@@ -57,7 +57,7 @@ get_shift_graphs <- function(x,
     stop("Please supply a shift object.", 
          call. = FALSE)
   }
-  if(class(x) != "shift") {
+  if(inherits(x, "shift") == FALSE) {
     stop("Please supply a shift object.", 
          call. = FALSE)
   }  

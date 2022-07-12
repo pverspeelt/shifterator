@@ -41,7 +41,7 @@
 #' as.data.frame() %>% 
 #' select(feature, frequency)
 #' 
-#' was <- weighted_avg_shift(reagan, bush)
+#' was <- weighted_avg_shift(reagan, bush, handle_missing_scores = "exclude")
 #' 
 
 weighted_avg_shift <- function(type2freq_1,
@@ -113,7 +113,7 @@ weighted_avg_shift <- function(type2freq_1,
     }
   }
   
-  if(!is.null(stop_words) && class(stop_words) != "character"){
+  if(!is.null(stop_words) && !is.character(stop_words)){
     message("stop_words needs to be a character vector.")
     stop_quietly()
   }
@@ -141,6 +141,18 @@ weighted_avg_shift <- function(type2freq_1,
 #' Proportion Shift
 #' 
 #' Shift object for calculating differences in proportions of types across two systems.
+#' 
+#' The easiest word shift graph that we can construct is a proportion
+#' shift. If \eqn{p_i^{(1)}} is the relative frequency of word *i* in the first
+#' text, and \eqn{p_i^{(2)}} is its relative frequency in the second text, then
+#' the proportion shift calculates their difference: 
+#' 
+#' **\eqn{\delta p_i = p_i^{(2)} - p_i^{(1)}}** 
+#' 
+#' If the difference is positive (\eqn{\delta p_i > 0}), then the word is 
+#' relatively more common in the second text. If it is negative (\eqn{\delta p_i < 0}), 
+#' then it is relatively more common in the first text. We can rank words by 
+#' this difference and plot them as a word shift graph.
 #'
 #' @inheritParams shift 
 #'
@@ -329,8 +341,14 @@ entropy_shift <- function(type2freq_1,
 
 #' Kullback-Leibler Divergence Shift
 #' 
-#' Shift object for calculating the Kullback-Leibler divergence (KLD) between two systems
+#' Shift object for calculating the Kullback-Leibler divergence (KLD) between two systems. 
 #' 
+#' The Kullback-Leibler divergence (KLD) is a useful asymmetric measure of
+#' how two texts differ. One text is the reference text and the other is
+#' the comparison text.
+#' 
+#' The KLD is only well-defined if every single word in the comparison text
+#' is also in the reference text. If this is not the case KLD diverges to infinity.
 #' 
 #' @inheritParams entropy_shift
 #' 
@@ -339,6 +357,7 @@ entropy_shift <- function(type2freq_1,
 #' @export
 #' 
 #' @examples
+#' \dontrun{
 #' library(shifterator)
 #' library(quanteda)
 #' library(quanteda.textstats)
@@ -358,7 +377,9 @@ entropy_shift <- function(type2freq_1,
 #' as.data.frame() %>% 
 #' select(feature, frequency)
 #' 
+#' # This will return the message that the KL divergence is not well-defined.
 #' kld <- kldivergence_shift(reagan, bush)
+#' }
 
 kldivergence_shift <- function(type2freq_1,
                                type2freq_2,
