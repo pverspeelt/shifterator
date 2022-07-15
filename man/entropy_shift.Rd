@@ -41,6 +41,46 @@ Returns a list object of class shift.
 \description{
 Shift object for calculating the shift in entropy between two systems.
 }
+\section{Shannon Entropy Shifts}{
+We can use the Shannon entropy to identify more "surprising" words and how
+they vary between two texts. The Shannon entropy \emph{H} is calculated as:
+
+\eqn{H(P) = \sum_i p_i \log \frac{1}{p_i}} Where the factor \eqn{-\log p_i}
+is the surprisal value of a word. The less often a word appears in a text,
+the more surprising it is. The Shannon entropy can be interpreted as the
+average surprisal value of a text. We can compare two texts by taking the difference
+between their entropies, \eqn{H(P^{(2)}) - H(P^{(1)})}. When we do this, we
+can get the contribution \eqn{\delta H_i} of each word to that difference:
+
+\eqn{\delta H_i = p_i^{(2)} \log \frac{1}{p_i^{(2)}} - p_i^{(1)} \log \frac{1}{p_i^{(1)}}}
+
+We can rank these contributions and plot them as a Shannon entropy word shift.
+If the contribution \eqn{\delta H_i} is positive, then word \emph{i} the has a
+higher score in the second text. If the contribution is negative, then its
+score is higher in the first text.
+
+The contributions \eqn{\delta H_i} are available in the type2shift_score
+column in the shift_scores data.frame in the shift object. The surprisals
+are available in the type2score_1 and type2score_2 columns.
+}
+
+\section{Tsallis Entropy Shifts}{
+The Tsallis entropy is a generalization of the Shannon entropy which allows
+us to emphasize common or less common words by altering an order parameter
+\eqn{\alpha} \> 0. When \eqn{\alpha} \< 1, uncommon words are weighted more
+heavily, and when \eqn{\alpha} \> 1, common words are weighted more heavily.
+In the case where \eqn{\alpha} = 1, the Tsallis entropy is equivalent to the
+Shannon entropy, which equally weights common and uncommon words.
+
+The contribution \eqn{\delta H_i^{\alpha}} of a word to the difference in
+Tsallis entropy of two texts is given by
+
+\eqn{\delta H_i^{\alpha} = \frac{-\bigl(p_i^{(2)}\bigr)^\alpha + \bigl(p_i^{(1)}\bigr)^\alpha}{\alpha - 1}}.
+
+The Tsallis entropy can be calculated using \code{entropy_shift} by passing it the
+parameter \code{alpha}.
+}
+
 \examples{
 library(shifterator)
 library(quanteda)
@@ -61,7 +101,10 @@ textstat_frequency() \%>\%
 as.data.frame() \%>\% 
 select(feature, frequency)
 
-entropy <- entropy_shift(reagan, bush)
+shannon_entropy_shift <- entropy_shift(reagan, bush)
+
+tsallis_entropy_shift <- entropy_shift(reagan, bush, alpha = 0.8)
+
 }
 \seealso{
 Other shifts: 

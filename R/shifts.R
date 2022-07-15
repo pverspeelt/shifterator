@@ -234,6 +234,47 @@ proportion_shift <- function(type2freq_1,
 #' Entropy Shift
 #' 
 #' Shift object for calculating the shift in entropy between two systems.
+#' 
+#' # Shannon Entropy Shifts
+#' 
+#' We can use the Shannon entropy to identify more "surprising" words and how 
+#' they vary between two texts. The Shannon entropy *H* is calculated as: 
+#' 
+#' \eqn{H(P) = \sum_i p_i \log \frac{1}{p_i}} Where the factor \eqn{-\log p_i} 
+#' is the surprisal value of a word. The less often a word appears in a text, 
+#' the more surprising it is. The Shannon entropy can be interpreted as the 
+#' average surprisal value of a text. We can compare two texts by taking the difference 
+#' between their entropies, \eqn{H(P^{(2)}) - H(P^{(1)})}. When we do this, we 
+#' can get the contribution \eqn{\delta H_i} of each word to that difference:
+#' 
+#' \eqn{\delta H_i = p_i^{(2)} \log \frac{1}{p_i^{(2)}} - p_i^{(1)} \log \frac{1}{p_i^{(1)}}}
+#' 
+#' We can rank these contributions and plot them as a Shannon entropy word shift. 
+#' If the contribution \eqn{\delta H_i} is positive, then word *i* the has a 
+#' higher score in the second text. If the contribution is negative, then its 
+#' score is higher in the first text.
+#' 
+#' The contributions \eqn{\delta H_i} are available in the type2shift_score 
+#' column in the shift_scores data.frame in the shift object. The surprisals 
+#' are available in the type2score_1 and type2score_2 columns.
+#' 
+#' # Tsallis Entropy Shifts
+#' 
+#' The Tsallis entropy is a generalization of the Shannon entropy which allows 
+#' us to emphasize common or less common words by altering an order parameter 
+#' \eqn{\alpha} \> 0. When \eqn{\alpha} \< 1, uncommon words are weighted more 
+#' heavily, and when \eqn{\alpha} \> 1, common words are weighted more heavily. 
+#' In the case where \eqn{\alpha} = 1, the Tsallis entropy is equivalent to the 
+#' Shannon entropy, which equally weights common and uncommon words. 
+#' 
+#' The contribution \eqn{\delta H_i^{\alpha}} of a word to the difference in 
+#' Tsallis entropy of two texts is given by 
+#' 
+#' \eqn{\delta H_i^{\alpha} = \frac{-\bigl(p_i^{(2)}\bigr)^\alpha + \bigl(p_i^{(1)}\bigr)^\alpha}{\alpha - 1}}.
+#' 
+#' The Tsallis entropy can be calculated using `entropy_shift` by passing it the 
+#' parameter `alpha`.
+#' 
 #'
 #' @inheritParams shift
 #' @param base The base for the logarithm when computing entropy scores.
@@ -264,8 +305,10 @@ proportion_shift <- function(type2freq_1,
 #' as.data.frame() %>% 
 #' select(feature, frequency)
 #' 
-#' entropy <- entropy_shift(reagan, bush)
-
+#' shannon_entropy_shift <- entropy_shift(reagan, bush)
+#' 
+#' tsallis_entropy_shift <- entropy_shift(reagan, bush, alpha = 0.8)
+#' 
 entropy_shift <- function(type2freq_1,
                           type2freq_2,
                           base = 2L,
@@ -345,8 +388,24 @@ entropy_shift <- function(type2freq_1,
 #' 
 #' The Kullback-Leibler divergence (KLD) is a useful asymmetric measure of
 #' how two texts differ. One text is the reference text and the other is
-#' the comparison text.
+#' the comparison text. If we let type2freq_1 be the reference text and 
+#' type2freq_2 be the comparison text, then we can calculate the KLD as 
 #' 
+#' \eqn{D^{(KL)}(P^{(2)} || P^{(1)}) = \sum_i p_i^{(2)} \log \frac{p_i^{(2)}}{p_i^{(1)}}}.
+#' 
+#' A word's contribution can be written as the difference in surprisals between 
+#' the reference and comparison text, similar to the Shannon entropy except 
+#' weighting each surprisal by the frequency of the word in the comparison. 
+#' 
+#' \eqn{\delta KLD_i = p_i^{(2)} \log \frac{1}{p_i^{(1)}} - p_i^{(2)} \log \frac{1}{p_i^{2}}}.
+#' 
+#' The contribution is positive if \eqn{p_i^{(2)} > p_i^{(1)}}. Similarly, it is 
+#' negative if \eqn{p_i^{(2)} < p_i^{(1)}}.
+#' 
+#' The total Kullback-Leibler divergence be accessed through the `difference` 
+#' column in the created shift object.
+#' 
+#' ## **WARNING**
 #' The KLD is only well-defined if every single word in the comparison text
 #' is also in the reference text. If this is not the case KLD diverges to infinity.
 #' 
@@ -450,7 +509,41 @@ kldivergence_shift <- function(type2freq_1,
 
 #' Jensen-Shannon Divergence Shift
 #' 
-#' Shift object for calculating the Jensen-Shannon divergence (JSD) between two systems
+#' Shift object for calculating the Jensen-Shannon divergence (JSD) between two systems.
+#' 
+#' The Jensen-Shannon divergence (JSD) accounts for some of the pathologies of 
+#' the KLD. It does so by first creating a mixture text \eqn{M}, 
+#' 
+#' \eqn{M = \pi_1 P^{(1)} + \pi_2 P^{(2)}},
+#' 
+#' where \eqn{\pi_1} and \eqn{\pi_2} are weights on the mixture between the 
+#' two corpora. The JSD is then calculated as the average KLD of each text from 
+#' the mixture text,
+#' 
+#' \eqn{D^{(JS)} \bigl(P^{(1)} || P^{(2)}\bigr) = \pi_1 D^{(KL)} \bigl(P^{(1)} || M \bigr) + \pi_2 D^{(KL)} \bigl(P^{(2)} || M \bigr)}
+#' 
+#' If the probability of a word in the mixture text is \eqn{m_i = \pi_1 p_i^{(1)} + \pi_2 p_i^{(2)}}, 
+#' then an individual word's contribution to the JSD can be written as 
+#' 
+#' \eqn{\delta JSD_i = m_i \log \frac{1}{m_i} - \biggl( \pi_i p_i^{(1)} \log \frac{1}{p_i^{(1)}} + \pi_2 p_i^{(2)} \log \frac{1}{p_i^{(2)}} \bigg)}
+#' 
+#' ## **Note**
+#' 
+#' The JSD is well-defined for every word because the KLD is taken with respect 
+#' to the mixture text M, which contains every word from both texts by design. 
+#' Unlike the other measures, a word's JSD contribution is always positive, so we 
+#' direct it in the word shift graph depending on the text in which it has the 
+#' highest relative frequency. A word's contribution is zero if and only if \eqn{p_i^{(1)} = p_i^{(2)}}.
+#' 
+#' Like the Shannon entropy, the JSD can be generalized using the Tsallis entropy 
+#' and the order can be set through the parameter `alpha`.
+#' 
+#' Quite often the JSD is effective at pulling out distinct words from each corpus 
+#' (rather than "stop words"), but it is a more complex measure and so it is harder 
+#' to properly interpret it as a whole. 
+#' 
+#' The total Jensen-Shannon divergence be accessed through the `difference` column 
+#' in the shift object.
 #'
 #' @inheritParams entropy_shift 
 #' @param weight_1 Relative weight of type2freq_1 when constructing the mixed distribution.

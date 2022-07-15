@@ -40,10 +40,27 @@ Shift object for calculating the Kullback-Leibler divergence (KLD) between two s
 \details{
 The Kullback-Leibler divergence (KLD) is a useful asymmetric measure of
 how two texts differ. One text is the reference text and the other is
-the comparison text.
+the comparison text. If we let type2freq_1 be the reference text and
+type2freq_2 be the comparison text, then we can calculate the KLD as
+
+\eqn{D^{(KL)}(P^{(2)} || P^{(1)}) = \sum_i p_i^{(2)} \log \frac{p_i^{(2)}}{p_i^{(1)}}}.
+
+A word's contribution can be written as the difference in surprisals between
+the reference and comparison text, similar to the Shannon entropy except
+weighting each surprisal by the frequency of the word in the comparison.
+
+\eqn{\delta KLD_i = p_i^{(2)} \log \frac{1}{p_i^{(1)}} - p_i^{(2)} \log \frac{1}{p_i^{2}}}.
+
+The contribution is positive if \eqn{p_i^{(2)} > p_i^{(1)}}. Similarly, it is
+negative if \eqn{p_i^{(2)} < p_i^{(1)}}.
+
+The total Kullback-Leibler divergence be accessed through the \code{difference}
+column in the created shift object.
+\subsection{\strong{WARNING}}{
 
 The KLD is only well-defined if every single word in the comparison text
 is also in the reference text. If this is not the case KLD diverges to infinity.
+}
 }
 \examples{
 \dontrun{

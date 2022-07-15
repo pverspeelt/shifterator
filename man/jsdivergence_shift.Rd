@@ -47,7 +47,42 @@ left unnormalized if the total is 0 and 'trajectory' is specified.}
 Returns a list object of class shift.
 }
 \description{
-Shift object for calculating the Jensen-Shannon divergence (JSD) between two systems
+Shift object for calculating the Jensen-Shannon divergence (JSD) between two systems.
+}
+\details{
+The Jensen-Shannon divergence (JSD) accounts for some of the pathologies of
+the KLD. It does so by first creating a mixture text \eqn{M},
+
+\eqn{M = \pi_1 P^{(1)} + \pi_2 P^{(2)}},
+
+where \eqn{\pi_1} and \eqn{\pi_2} are weights on the mixture between the
+two corpora. The JSD is then calculated as the average KLD of each text from
+the mixture text,
+
+\eqn{D^{(JS)} \bigl(P^{(1)} || P^{(2)}\bigr) = \pi_1 D^{(KL)} \bigl(P^{(1)} || M \bigr) + \pi_2 D^{(KL)} \bigl(P^{(2)} || M \bigr)}
+
+If the probability of a word in the mixture text is \eqn{m_i = \pi_1 p_i^{(1)} + \pi_2 p_i^{(2)}},
+then an individual word's contribution to the JSD can be written as
+
+\eqn{\delta JSD_i = m_i \log \frac{1}{m_i} - \biggl( \pi_i p_i^{(1)} \log \frac{1}{p_i^{(1)}} + \pi_2 p_i^{(2)} \log \frac{1}{p_i^{(2)}} \bigg)}
+\subsection{\strong{Note}}{
+
+The JSD is well-defined for every word because the KLD is taken with respect
+to the mixture text M, which contains every word from both texts by design.
+Unlike the other measures, a word's JSD contribution is always positive, so we
+direct it in the word shift graph depending on the text in which it has the
+highest relative frequency. A word's contribution is zero if and only if \eqn{p_i^{(1)} = p_i^{(2)}}.
+
+Like the Shannon entropy, the JSD can be generalized using the Tsallis entropy
+and the order can be set through the parameter \code{alpha}.
+
+Quite often the JSD is effective at pulling out distinct words from each corpus
+(rather than "stop words"), but it is a more complex measure and so it is harder
+to properly interpret it as a whole.
+
+The total Jensen-Shannon divergence be accessed through the \code{difference} column
+in the shift object.
+}
 }
 \examples{
 library(shifterator)
