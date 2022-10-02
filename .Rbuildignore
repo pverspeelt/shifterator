@@ -4,3 +4,6 @@
 ^README\.Rmd$
 ^\.github$
 article.bib
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
