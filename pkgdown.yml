@@ -1,0 +1,10 @@
+pandoc: 2.14.2
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  introduction_shifterator: introduction_shifterator.html
+last_built: 2022-10-02T14:25Z
+urls:
+  reference: https://pverspeelt.github.io/shifterator/reference
+  article: https://pverspeelt.github.io/shifterator/articles
+
